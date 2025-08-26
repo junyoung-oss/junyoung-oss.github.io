@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           bundle install
-          npm ci  # package-lock.json 기준으로 안정적 설치
+          npm install
 
       # 5. Jekyll 사이트 빌드
       - name: Build site
