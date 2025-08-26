@@ -1,65 +1,70 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+# GitHub Pages에 Jekyll 사이트를 자동으로 빌드하고 배포하는 워크플로우
 name: Deploy Jekyll site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # 기본 브랜치(master)에 push 될 때 실행
   push:
     branches: ["master"]
 
-  # Allows you to run this workflow manually from the Actions tab
+  # Actions 탭에서 수동 실행 가능
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# GitHub 토큰 권한 설정
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read   # 저장소 콘텐츠 읽기 권한
+  pages: write     # Pages에 쓰기 권한
+  id-token: write  # 인증 토큰 발급 권한
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# 동시에 여러 배포 실행을 막음 (최신 것만 실행되도록)
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Build job
+  # ---------------------
+  # 1. Build Job
+  # ---------------------
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # 빌드 환경: 최신 Ubuntu
     steps:
+      # 저장소 코드를 체크아웃
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Ruby 환경 설정 (Jekyll 실행에 필요)
       - name: Setup Ruby
-        # https://github.com/ruby/setup-ruby/releases/tag/v1.207.0
-        uses: ruby/setup-ruby@4a9ddd6f338a97768b8006bf671dfbad383215f4
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3' # Not needed with a .ruby-version file
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-          cache-version: 0 # Increment this number if you need to re-download cached gems
+          ruby-version: '3.3'   # 사용할 Ruby 버전
+          bundler-cache: true   # gem(의존성) 자동 캐싱
+          cache-version: 0      # 캐시 갱신할 때 이 숫자를 변경
+
+      # GitHub Pages 환경 설정 (base_path 같은 변수 준비)
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+
+      # Jekyll로 사이트 빌드 (출력은 기본적으로 ./_site)
       - name: Build with Jekyll
-        # Outputs to the './_site' directory by default
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
-          JEKYLL_ENV: production
+          JEKYLL_ENV: production   # production 환경에서 빌드
+
+      # 빌드 결과물(_site)을 Pages 아티팩트로 업로드
       - name: Upload artifact
-        # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v3
 
-  # Deployment job
+  # ---------------------
+  # 2. Deploy Job
+  # ---------------------
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}  # 배포된 URL 가져오기
     runs-on: ubuntu-latest
-    needs: build
+    needs: build  # build job이 끝나야 실행됨
     steps:
+      # GitHub Pages에 업로드된 아티팩트를 실제로 배포
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
