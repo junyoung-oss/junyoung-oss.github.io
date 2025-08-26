@@ -44,7 +44,7 @@ jobs:
 
       # 5. Node.js 의존성 설치
       - name: Install Node.js dependencies
-        run: npm ci
+        run: npm install
 
       # 6. Jekyll 빌드 (Pages용 경로 지정)
       - name: Build Jekyll site
