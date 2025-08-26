@@ -9,17 +9,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 코드 체크아웃
       - uses: actions/checkout@v3
+
+      # 2. Ruby 설치 및 bundler 캐시 설정
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1
+          ruby-version: 3.3
           bundler-cache: true
+
+      # 3. npm 레지스트리 설정 (공용 레지스트리 강제)
+      - name: Set npm registry
+        run: npm config set registry https://registry.npmjs.org/
+
+      # 4. 의존성 설치
       - name: Install dependencies
         run: |
           bundle install
-          npm install
+          npm ci  # package-lock.json 기준으로 안정적 설치
+
+      # 5. Jekyll 사이트 빌드
       - name: Build site
         run: bundle exec jekyll build
+
+      # 6. 아티팩트 업로드
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -36,6 +49,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # 7. GitHub Pages 배포
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
