@@ -46,17 +46,27 @@ jobs:
       - name: Set npm registry
         run: npm config set registry https://registry.npmjs.org/
 
-      # 5. Node.js 의존성 설치 (빌드용만)
+      # 5. _site 폴더 초기화 (이전 빌드 제거)
+      - name: Clean _site
+        run: rm -rf _site
+
+      # 6. Node.js 의존성 설치 (package-lock.json 기준)
       - name: Install Node.js dependencies
         run: npm ci
 
-      # 6. Jekyll 빌드
+      # 7. Jekyll 빌드
       - name: Build Jekyll site
         run: bundle exec jekyll build -d "_site${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: "production"
 
-      # 7. 빌드된 사이트를 artifact로 업로드
+      # 8. 불필요 파일 제거 (심볼릭 링크, node_modules 등)
+      - name: Remove forbidden files for deployment
+        run: |
+          find _site -type l -delete
+          rm -rf _site/node_modules _site/package-lock.json
+
+      # 9. 빌드된 사이트를 artifact로 업로드
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v4
         with:
@@ -69,7 +79,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 8. GitHub Pages 배포
+      # 10. GitHub Pages 배포
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
