@@ -52,7 +52,7 @@ jobs:
 
       # 6. Node.js 의존성 설치 (package-lock.json 기준)
       - name: Install Node.js dependencies
-        run: npm ci
+        run: npm install
 
       # 7. Jekyll 빌드
       - name: Build Jekyll site
