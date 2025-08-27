@@ -30,7 +30,7 @@ mermaid: true
 # 글 대표 이미지 설정
 image:
   # 이미지 경로 (로컬 또는 외부 URL)
-  path: "/assets/img/sample.png"
+  path: "/assets/img/favicons/avatar.png"
   # LQIP: Low Quality Image Placeholder, 비워도 됨
   lqip: ""
   # 이미지 설명 (SEO 및 접근성)
@@ -46,7 +46,7 @@ toc: true
 published: true
 
 # Canonical URL (중복 콘텐츠 대비 SEO)
-canonical: "https://junyoung-oss.github.io/posts/글-주소/"
+canonical: "https://junyoung-oss.github.io/posts/#/"
 
 # 외부 참조 링크
 external_url: ""
