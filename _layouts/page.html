@@ -5,6 +5,10 @@ layout: default
 {% include lang.html %}
 
 <article class="px-1">
+  {% if page.image.path %}
+    <img src="{{ page.image.path }}" alt="{{ page.image.alt }}">
+  {% endif %}
+
   {% if page.layout == 'page' or page.collection == 'tabs' %}
     {% assign tab_key = page.title | downcase %}
     {% assign title = site.data.locales[lang].tabs[tab_key] | default: page.title %}
