@@ -5,8 +5,6 @@ categories: [SwiftUI]
 tags: [swift, swiftui, ios]
 ---
 
-# [Swift] SwiftUI의 View Layout 결정 원리 ✨
-
 UIKit에는 Auto Layout이 있지만,  
 SwiftUI는 Auto Layout을 직접적으로 쓰지 않고  
 **자체 레이아웃 시스템**을 가지고 있음.  

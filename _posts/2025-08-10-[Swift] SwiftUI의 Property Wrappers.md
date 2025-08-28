@@ -5,8 +5,6 @@ categories: [SwiftUI]
 tags: [swift, swiftui, ios, propertywrapper]
 ---
 
-# [Swift] SwiftUI의 Property Wrappers 🧩
-
 SwiftUI를 제대로 쓰려면 **Property Wrappers** 개념을 확실히 이해해야 함.  
 SwiftUI에서 상태 관리와 데이터 흐름을 다루는 핵심 도구들이라, 뷰를 만들다 보면 필수적으로 맞닥뜨리게 된다.  
 
