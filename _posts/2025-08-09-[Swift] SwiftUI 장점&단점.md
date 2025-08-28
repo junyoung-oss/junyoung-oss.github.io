@@ -1,15 +1,9 @@
 ---
 layout: post
-title: "SwiftUI 정리 메모"
-date: 2025-08-28 23:55:00 +0900
+title: "SwiftUI 장점/단점"
+date: 2025-08-09 23:49:00 +0900
 categories: [Swift, SwiftUI]
 tags: [swift, swiftui, ios]
----
-
-# 📝 SwiftUI 정리 메모
-
-공부하면서 느낀 점 정리. 설명하려고 쓰는 게 아니라, 나중에 내가 다시 볼 때 기억나도록 적어둠.
-
 ---
 
 ## ✅ 장점
