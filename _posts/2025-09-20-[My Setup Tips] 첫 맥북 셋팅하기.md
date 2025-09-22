@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[macOS] 새 맥북 개발 환경 세팅 기록"
-categories: [macOS, Setup]
+categories: [macOS, My Setup Tips]
 tags: [macbook, setup, homebrew, git, vscode]
 ---
 
