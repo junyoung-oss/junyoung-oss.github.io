@@ -24,13 +24,39 @@
 
         min-height: 100vh;
 
-        background: linear-gradient(180deg, #090f24, #263e66);
+        background: linear-gradient(180deg, #080d22, #253b63);
 
         color: white;
 
         font-family: "Nanum Pen Script", cursive;
 
         overflow: hidden;
+      }
+
+      /* 별 */
+
+      .star {
+        position: fixed;
+
+        width: 3px;
+
+        height: 3px;
+
+        background: white;
+
+        border-radius: 50%;
+
+        opacity: 0.5;
+
+        animation: twinkle 3s infinite;
+      }
+
+      @keyframes twinkle {
+        50% {
+          opacity: 1;
+
+          transform: scale(1.8);
+        }
       }
 
       .container {
@@ -56,11 +82,15 @@
       h1 {
         font-size: 60px;
 
-        line-height: 1.2;
+        line-height: 1.3;
+
+        margin: 0;
       }
 
       .subtitle {
         font-size: 38px;
+
+        margin-top: 10px;
       }
 
       .message {
@@ -74,7 +104,7 @@
       button {
         margin-top: 30px;
 
-        padding: 14px 35px;
+        padding: 15px 35px;
 
         border-radius: 40px;
 
@@ -87,8 +117,10 @@
         font-family: inherit;
 
         font-size: 27px;
+      }
 
-        cursor: pointer;
+      button:active {
+        transform: scale(0.95);
       }
 
       .hidden {
@@ -97,7 +129,7 @@
 
       /* 이야기 카드 */
 
-      .story {
+      .story-area {
         display: none;
       }
 
@@ -106,30 +138,32 @@
 
         background: #fff8e8;
 
-        color: #49392f;
+        color: #4a3a32;
 
         padding: 35px 25px;
 
-        border-radius: 20px;
+        border-radius: 22px;
 
         font-size: 32px;
 
         line-height: 1.8;
 
-        animation: appear 0.8s ease;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+
+        animation: cardOpen 0.8s;
       }
 
-      @keyframes appear {
+      @keyframes cardOpen {
         from {
           opacity: 0;
 
-          transform: translateY(40px);
+          transform: translateY(50px) rotate(-2deg);
         }
 
         to {
           opacity: 1;
 
-          transform: translateY(0);
+          transform: translateY(0) rotate(0);
         }
       }
 
@@ -137,8 +171,6 @@
         margin-top: 20px;
 
         font-size: 22px;
-
-        opacity: 0.8;
       }
 
       /* 편지 */
@@ -148,17 +180,21 @@
 
         margin-top: 35px;
 
+        padding: 35px 25px;
+
         background: #fff8e8;
 
-        color: #49392f;
-
-        padding: 35px 25px;
+        color: #4a3a32;
 
         border-radius: 20px;
 
-        font-size: 31px;
+        font-size: 32px;
 
         line-height: 2;
+
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+
+        animation: cardOpen 0.8s;
       }
 
       .show {
@@ -184,17 +220,31 @@
           opacity: 0;
         }
       }
-
-      .signature {
-        margin-top: 30px;
-      }
     </style>
   </head>
 
   <body>
-    <audio id="bgm">
+    <audio id="bgm" loop>
       <source src="birthday-song.mp3" type="audio/mpeg" />
     </audio>
+
+    <script>
+      // 별 생성
+
+      for (let i = 0; i < 80; i++) {
+        let star = document.createElement("div");
+
+        star.className = "star";
+
+        star.style.left = Math.random() * 100 + "vw";
+
+        star.style.top = Math.random() * 100 + "vh";
+
+        star.style.animationDelay = Math.random() * 3 + "s";
+
+        document.body.appendChild(star);
+      }
+    </script>
 
     <div class="container">
       <div class="card">
@@ -216,20 +266,24 @@
           🎵 이걸 먼저 눌러줘
         </button>
 
-        <div id="startStory" class="hidden">
-          <button onclick="startStory()">📖 윤서 이야기 보기</button>
+        <div id="storyStart" class="hidden">
+          <button onclick="beginStory()">📖 윤서 이야기 보기</button>
         </div>
 
-        <div id="storyArea" class="story">
-          <div id="storyCard"></div>
+        <div id="storyArea" class="story-area">
+          <div id="storyCard" class="story-card"></div>
 
-          <div class="count" id="count"></div>
+          <div id="count" class="count"></div>
 
           <button onclick="nextStory()">다음 이야기 →</button>
         </div>
 
         <div id="letter" class="letter">
-          <p>윤서야, 생일 진심으로 축하해.</p>
+          <p>
+            윤서야,<br />
+
+            생일 진심으로 축하해.
+          </p>
 
           <p>
             너의 작은 취향들과<br />
@@ -269,13 +323,15 @@
             John 20:19
           </p>
 
-          <div class="signature">- 준영 -</div>
+          <br />
+
+          - 준영 -
         </div>
       </div>
     </div>
 
     <script>
-      let current = 0;
+      let index = 0;
 
       const stories = [
         `
@@ -317,7 +373,7 @@
 
 <br><br>
 
-닭발은 아직 나에게 조금 어렵지만...
+닭발은 아직 조금 어렵지만...
 
 똥집은 인정 ㅎㅎ
 `,
@@ -334,30 +390,28 @@
       ];
 
       function playMusic() {
-        let music = document.getElementById("bgm");
-
-        music.play();
+        document.getElementById("bgm").play();
 
         document.querySelector(".music-btn").innerHTML =
           "🎵 음악이 흐르고 있어";
 
-        document.getElementById("startStory").classList.remove("hidden");
+        document.getElementById("storyStart").classList.remove("hidden");
       }
 
-      function startStory() {
+      function beginStory() {
         document.querySelector(".message").innerHTML =
           "윤서에 대한<br>작은 이야기";
 
         document.getElementById("storyArea").style.display = "block";
 
-        document.getElementById("startStory").style.display = "none";
+        document.getElementById("storyStart").style.display = "none";
 
         nextStory();
       }
 
       function nextStory() {
-        if (current >= stories.length) {
-          celebrate();
+        if (index >= stories.length) {
+          fireworks();
 
           document.getElementById("storyArea").style.display = "none";
 
@@ -366,27 +420,27 @@
           return;
         }
 
-        document.getElementById("storyCard").innerHTML = stories[current];
+        document.getElementById("storyCard").innerHTML = stories[index];
 
         document.getElementById("count").innerHTML =
-          `${current + 1} / ${stories.length}`;
+          `${index + 1} / ${stories.length}`;
 
-        current++;
+        index++;
       }
 
-      function celebrate() {
-        let items = ["🎉", "🎊", "✨", "🎈"];
+      function fireworks() {
+        let emojis = ["🎉", "🎊", "✨", "🎈"];
 
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 120; i++) {
           let c = document.createElement("div");
 
           c.className = "confetti";
 
-          c.innerHTML = items[Math.floor(Math.random() * items.length)];
+          c.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
 
           c.style.left = Math.random() * 100 + "vw";
 
-          c.style.fontSize = 20 + Math.random() * 20 + "px";
+          c.style.fontSize = 20 + Math.random() * 25 + "px";
 
           c.style.animationDelay = Math.random() * 2 + "s";
 
