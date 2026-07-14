@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>윤서의 생일</title>
+    <title>생일 축하해 윤서야</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -131,8 +131,6 @@
 
       .story-box {
         margin-top: 35px;
-
-        margin-bottom: 10px;
       }
 
       .story-card {
@@ -196,6 +194,18 @@
       }
 
       .show {
+        display: block;
+      }
+
+      #blessingBtn {
+        display: none;
+      }
+
+      #blessing {
+        display: none;
+      }
+
+      #blessing.show {
         display: block;
       }
 
@@ -267,6 +277,7 @@
 
           <button onclick="nextStory()">다음 이야기 →</button>
         </div>
+
         <div id="letter" class="letter">
           <p>
             윤서야,<br />
@@ -287,7 +298,7 @@
 
             <br /><br />
 
-            윤서라는 사람이 참 좋은 것 같아.
+            그런 윤서의 모습들이 참 좋더라.
           </p>
 
           <p>
@@ -307,9 +318,7 @@
           </p>
         </div>
 
-        <!-- 편지 밖 버튼 -->
-
-        <button onclick="showBlessing()">다음으로 →</button>
+        <button id="blessingBtn" onclick="showBlessing()">다음으로 →</button>
 
         <div id="blessing" class="letter">
           <p>🙏</p>
@@ -324,7 +333,7 @@
 
           <p>
             공부하는 순간마다 지치지 않는 힘을 주시고,<br />
-            걱정과 부담보다 하나님을 의지하며<br />
+            걱정보다 하나님을 의지하며<br />
             끝까지 잘 걸어갈 수 있기를 기도해.
           </p>
 
@@ -394,14 +403,14 @@
 
 <br><br>
 
-걱정도 많이 했지만,
+솔직히 걱정도 많이 했지만,
 
 그래도 맡은 자리에서 즐겁게<br>
 활동하는 모습이 멋있더라 ㅎㅎ
 
 <br><br>
 
-우리 회장님,<br>
+우리 멋진 회장님,<br>
 남은 기간도 힘내세요 😊
 `,
 
@@ -474,6 +483,8 @@
           document.getElementById("storyArea").style.display = "none";
 
           document.getElementById("letter").classList.add("show");
+
+          document.getElementById("blessingBtn").style.display = "inline-block";
 
           setTimeout(() => {
             document.getElementById("letter").scrollIntoView({
