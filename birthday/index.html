@@ -35,8 +35,6 @@
         overflow-y: auto;
       }
 
-      /* 별 */
-
       .star {
         position: fixed;
 
@@ -90,7 +88,7 @@
       }
 
       .subtitle {
-        font-size: 40px;
+        font-size: 42px;
 
         margin-top: 5px;
       }
@@ -130,8 +128,6 @@
       .hidden {
         display: none;
       }
-
-      /* 이야기 */
 
       .story-area {
         display: none;
@@ -177,8 +173,6 @@
         font-size: 24px;
       }
 
-      /* 편지 */
-
       .letter {
         display: none;
 
@@ -204,8 +198,6 @@
       .show {
         display: block;
       }
-
-      /* 폭죽 */
 
       .confetti {
         position: fixed;
@@ -233,8 +225,6 @@
     </audio>
 
     <script>
-      // 별 만들기
-
       for (let i = 0; i < 80; i++) {
         let star = document.createElement("div");
 
@@ -268,10 +258,6 @@
 
         <button id="musicBtn" onclick="playMusic()">🎵 이걸 먼저 눌러줘</button>
 
-        <div id="storyStart" class="hidden">
-          <button onclick="startStory()">📖 윤서 이야기 보기</button>
-        </div>
-
         <div id="storyArea" class="story-area">
           <div id="storyCard" class="story-card"></div>
 
@@ -279,7 +265,6 @@
 
           <button onclick="nextStory()">다음 이야기 →</button>
         </div>
-
         <div id="letter" class="letter">
           <p>
             윤서야,<br />
@@ -305,7 +290,7 @@
           </p>
 
           <p>
-            하나님 안에서 늘 건강하고,<br />
+            하나님 안에서 늘 건강하고<br />
             걸어가는 모든 길 위에<br />
             평안이 함께하길 기도할게.
           </p>
@@ -315,6 +300,42 @@
             John 20:19
           </p>
 
+          <button onclick="showBlessing()">다음으로 →</button>
+        </div>
+
+        <div id="blessing" class="letter">
+          <p>🙏</p>
+
+          <p>윤서야,</p>
+
+          <p>
+            올해 준비하고 있는 국시와<br />
+            그동안 노력해온 모든 시간 위에<br />
+            하나님의 지혜와 평안이 함께하길 기도할게.
+          </p>
+
+          <p>
+            공부하는 순간마다 지치지 않는 힘을 주시고,<br />
+            불안한 마음보다 하나님을 의지하는<br />
+            담대함을 가질 수 있기를 기도해.
+          </p>
+
+          <p>
+            준비한 모든 과정 위에<br />
+            좋은 열매가 맺히길 바라며,<br />
+            윤서가 걸어가는 모든 길 가운데<br />
+            하나님께서 함께하시길 축복할게.
+          </p>
+
+          <p>
+            "여호와는 네게 복을 주시고<br />
+            너를 지키시기를 원하며<br />
+            여호와는 그 얼굴을 네게로 향하여 드사<br />
+            평강 주시기를 원하노라"
+          </p>
+
+          <p>민수기 6:24-26</p>
+
           <br />
 
           - 준영 -
@@ -323,6 +344,8 @@
     </div>
 
     <script>
+      let musicStarted = false;
+
       let index = 0;
 
       const stories = [
@@ -333,41 +356,17 @@
 
 가족 이야기를 할 때마다
 
-따뜻해지는 모습이 참 좋았어.
+즐거워하던 모습이 참 좋더라 ㅎㅎ
 `,
 
         `
-🍛 카레를 굳이 밖에서<br>
-사 먹긴 싫다던 윤서
-
-<br><br>
-
-솔직히...
-
-그건 나도 인정 ㅎㅎ
-
-집에서 먹는 카레가 맛있긴 하지 😌
-`,
-
-        `
-🥘 곱창이 최애 음식인 윤서
+🥘 곱창 좋아하는 윤서
 
 <br><br>
 
 이건 나도 좋아!
 
-같이 맛있는 거 먹으러 가자 😊
-`,
-
-        `
-🍗 닭발과 똥집을 먹으며<br>
-행복해하던 윤서
-
-<br><br>
-
-닭발은 아직 조금 어렵지만...
-
-똥집은 인정 ㅎㅎ
+또 먹으러 가자 ㅎㅎ
 `,
 
         `
@@ -375,18 +374,73 @@
 
 <br><br>
 
-이건 완전 공감!
+나도 뇨끼 좋아해!
 
-나도 뇨끼 너무 좋아 😊
+종종 먹으러 가자 ㅎㅎ
+`,
+
+        `
+🏫 조이워십 활동에<br>
+애 많이 쓰는 윤서
+
+<br><br>
+
+솔직히 걱정도 많이 했는데,
+
+그래도 맡은 자리에서 즐겁게<br>
+활동하는 모습이 멋있더라 ㅎㅎ
+
+<br><br>
+
+우리 멋진 회장님,<br>
+남은 기간도 힘내세요 😊
+`,
+
+        `
+🎓 대학부가 좋다는 윤서
+
+<br><br>
+
+직장을 가지면서 조금 멀어졌던 나와 달리,
+
+여전히 그 자리를 좋아하고<br>
+함께하는 모습이 참 보기 좋더라.
+
+<br><br>
+
+그래도...
+
+너무 오래 있지는 마 ㅎㅎ
+`,
+
+        `
+✨ 그리고 내가 좋아하는 건
+
+<br><br>
+
+이런 작은 취향들과
+
+따뜻한 마음을 가진
+
+윤서라는 사람이야.
 `
       ];
 
       function playMusic() {
-        document.getElementById("bgm").play();
+        let music = document.getElementById("bgm");
 
-        document.getElementById("musicBtn").innerHTML = "🎵 음악이 흐르고 있어";
+        if (!musicStarted) {
+          music.play();
 
-        document.getElementById("storyStart").classList.remove("hidden");
+          musicStarted = true;
+
+          document.getElementById("musicBtn").innerHTML =
+            "📖 이제 윤서 이야기 들어봐";
+
+          return;
+        }
+
+        startStory();
       }
 
       function startStory() {
@@ -395,9 +449,15 @@
 
         document.getElementById("storyArea").style.display = "block";
 
-        document.getElementById("storyStart").style.display = "none";
+        document.getElementById("musicBtn").style.display = "none";
 
         nextStory();
+
+        setTimeout(() => {
+          document.getElementById("storyArea").scrollIntoView({
+            behavior: "smooth"
+          });
+        }, 300);
       }
 
       function nextStory() {
@@ -412,7 +472,7 @@
             document.getElementById("letter").scrollIntoView({
               behavior: "smooth"
             });
-          }, 300);
+          }, 500);
 
           return;
         }
@@ -434,14 +494,14 @@
       }
 
       function fireworks() {
-        let emoji = ["🎉", "🎊", "✨", "🎈"];
+        let emojis = ["🎉", "🎊", "✨", "🎈"];
 
         for (let i = 0; i < 120; i++) {
           let item = document.createElement("div");
 
           item.className = "confetti";
 
-          item.innerHTML = emoji[Math.floor(Math.random() * emoji.length)];
+          item.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
 
           item.style.left = Math.random() * 100 + "vw";
 
@@ -455,6 +515,16 @@
             item.remove();
           }, 4000);
         }
+      }
+
+      function showBlessing() {
+        document.getElementById("blessing").classList.add("show");
+
+        setTimeout(() => {
+          document.getElementById("blessing").scrollIntoView({
+            behavior: "smooth"
+          });
+        }, 200);
       }
     </script>
   </body>
