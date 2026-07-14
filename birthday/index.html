@@ -199,14 +199,6 @@
         display: block;
       }
 
-      #blessing {
-        display: none;
-      }
-
-      #blessing.show {
-        display: block;
-      }
-
       .confetti {
         position: fixed;
 
@@ -275,7 +267,6 @@
 
           <button onclick="nextStory()">다음 이야기 →</button>
         </div>
-
         <div id="letter" class="letter">
           <p>
             윤서야,<br />
@@ -314,9 +305,11 @@
             Peace Be With You<br />
             John 20:19
           </p>
-
-          <button onclick="showBlessing()">다음으로 →</button>
         </div>
+
+        <!-- 편지 밖 버튼 -->
+
+        <button onclick="showBlessing()">다음으로 →</button>
 
         <div id="blessing" class="letter">
           <p>🙏</p>
@@ -538,7 +531,7 @@
           document.getElementById("blessing").scrollIntoView({
             behavior: "smooth"
           });
-        }, 200);
+        }, 300);
       }
     </script>
   </body>
