@@ -30,7 +30,9 @@
 
         font-family: "Nanum Pen Script", cursive;
 
-        overflow: hidden;
+        overflow-x: hidden;
+
+        overflow-y: auto;
       }
 
       /* 별 */
@@ -66,9 +68,9 @@
 
         justify-content: center;
 
-        align-items: center;
+        align-items: flex-start;
 
-        padding: 25px;
+        padding: 50px 25px;
       }
 
       .card {
@@ -88,15 +90,15 @@
       }
 
       .subtitle {
-        font-size: 38px;
+        font-size: 40px;
 
-        margin-top: 10px;
+        margin-top: 5px;
       }
 
       .message {
         margin-top: 35px;
 
-        font-size: 30px;
+        font-size: 32px;
 
         line-height: 1.8;
       }
@@ -116,7 +118,9 @@
 
         font-family: inherit;
 
-        font-size: 27px;
+        font-size: 28px;
+
+        cursor: pointer;
       }
 
       button:active {
@@ -127,18 +131,18 @@
         display: none;
       }
 
-      /* 이야기 카드 */
+      /* 이야기 */
 
       .story-area {
         display: none;
       }
 
       .story-card {
-        margin-top: 35px;
+        margin-top: 40px;
 
         background: #fff8e8;
 
-        color: #4a3a32;
+        color: #49392f;
 
         padding: 35px 25px;
 
@@ -150,10 +154,10 @@
 
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 
-        animation: cardOpen 0.8s;
+        animation: openCard 0.8s ease;
       }
 
-      @keyframes cardOpen {
+      @keyframes openCard {
         from {
           opacity: 0;
 
@@ -170,7 +174,7 @@
       .count {
         margin-top: 20px;
 
-        font-size: 22px;
+        font-size: 24px;
       }
 
       /* 편지 */
@@ -178,13 +182,13 @@
       .letter {
         display: none;
 
-        margin-top: 35px;
-
-        padding: 35px 25px;
+        margin-top: 40px;
 
         background: #fff8e8;
 
-        color: #4a3a32;
+        color: #49392f;
+
+        padding: 35px 25px;
 
         border-radius: 20px;
 
@@ -194,7 +198,7 @@
 
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 
-        animation: cardOpen 0.8s;
+        animation: openCard 0.8s ease;
       }
 
       .show {
@@ -229,7 +233,7 @@
     </audio>
 
     <script>
-      // 별 생성
+      // 별 만들기
 
       for (let i = 0; i < 80; i++) {
         let star = document.createElement("div");
@@ -262,12 +266,10 @@
           준비했어.
         </div>
 
-        <button class="music-btn" onclick="playMusic()">
-          🎵 이걸 먼저 눌러줘
-        </button>
+        <button id="musicBtn" onclick="playMusic()">🎵 이걸 먼저 눌러줘</button>
 
         <div id="storyStart" class="hidden">
-          <button onclick="beginStory()">📖 윤서 이야기 보기</button>
+          <button onclick="startStory()">📖 윤서 이야기 보기</button>
         </div>
 
         <div id="storyArea" class="story-area">
@@ -281,45 +283,35 @@
         <div id="letter" class="letter">
           <p>
             윤서야,<br />
-
             생일 진심으로 축하해.
           </p>
 
           <p>
             너의 작은 취향들과<br />
-
-            소중하게 생각하는 것들을<br />
-
-            알아가는 시간이 참 좋았어.
+            좋아하는 것들을 기억하고<br />
+            이야기할 수 있다는 게 참 좋았어.
           </p>
 
           <p>
             가족을 사랑하고,<br />
-
             맛있는 것을 좋아하고,<br />
-
             소소한 순간에 행복해하는<br />
-
             윤서라는 사람이 참 좋아.
           </p>
 
           <p>
-            앞으로도 많이 웃고<br />
-
+            앞으로도 지금처럼 많이 웃고<br />
             행복한 날들이 가득했으면 좋겠다.
           </p>
 
           <p>
             하나님 안에서 늘 건강하고,<br />
-
             걸어가는 모든 길 위에<br />
-
             평안이 함께하길 기도할게.
           </p>
 
           <p>
             Peace Be With You<br />
-
             John 20:19
           </p>
 
@@ -392,13 +384,12 @@
       function playMusic() {
         document.getElementById("bgm").play();
 
-        document.querySelector(".music-btn").innerHTML =
-          "🎵 음악이 흐르고 있어";
+        document.getElementById("musicBtn").innerHTML = "🎵 음악이 흐르고 있어";
 
         document.getElementById("storyStart").classList.remove("hidden");
       }
 
-      function beginStory() {
+      function startStory() {
         document.querySelector(".message").innerHTML =
           "윤서에 대한<br>작은 이야기";
 
@@ -417,6 +408,12 @@
 
           document.getElementById("letter").classList.add("show");
 
+          setTimeout(() => {
+            document.getElementById("letter").scrollIntoView({
+              behavior: "smooth"
+            });
+          }, 300);
+
           return;
         }
 
@@ -426,28 +423,36 @@
           `${index + 1} / ${stories.length}`;
 
         index++;
+
+        setTimeout(() => {
+          document.getElementById("storyCard").scrollIntoView({
+            behavior: "smooth",
+
+            block: "center"
+          });
+        }, 100);
       }
 
       function fireworks() {
-        let emojis = ["🎉", "🎊", "✨", "🎈"];
+        let emoji = ["🎉", "🎊", "✨", "🎈"];
 
         for (let i = 0; i < 120; i++) {
-          let c = document.createElement("div");
+          let item = document.createElement("div");
 
-          c.className = "confetti";
+          item.className = "confetti";
 
-          c.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+          item.innerHTML = emoji[Math.floor(Math.random() * emoji.length)];
 
-          c.style.left = Math.random() * 100 + "vw";
+          item.style.left = Math.random() * 100 + "vw";
 
-          c.style.fontSize = 20 + Math.random() * 25 + "px";
+          item.style.fontSize = 20 + Math.random() * 25 + "px";
 
-          c.style.animationDelay = Math.random() * 2 + "s";
+          item.style.animationDelay = Math.random() * 2 + "s";
 
-          document.body.appendChild(c);
+          document.body.appendChild(item);
 
           setTimeout(() => {
-            c.remove();
+            item.remove();
           }, 4000);
         }
       }
