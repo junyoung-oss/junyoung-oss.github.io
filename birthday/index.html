@@ -6,6 +6,14 @@
 
     <title>Happy Birthday Yoonseo</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Maru+Buri:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
       * {
         box-sizing: border-box;
@@ -13,68 +21,108 @@
 
       body {
         margin: 0;
+
         min-height: 100vh;
-        background: linear-gradient(180deg, #0b1026, #1d2b4f);
-        color: #ffffff;
-        font-family: "Pretendard", "Noto Sans KR", sans-serif;
+
+        background: linear-gradient(180deg, #090f24, #1b3158);
+
+        color: white;
+
+        font-family: "Maru Buri", serif;
+
         overflow-x: hidden;
       }
 
       /* 별 */
+
       .star {
         position: fixed;
+
         width: 3px;
         height: 3px;
+
         background: white;
+
         border-radius: 50%;
+
+        opacity: 0.6;
+
         animation: twinkle 3s infinite;
-        opacity: 0.7;
       }
 
       @keyframes twinkle {
-        0%,
-        100% {
-          opacity: 0.2;
-        }
         50% {
           opacity: 1;
         }
       }
 
+      /* 화면 */
+
       .container {
         min-height: 100vh;
+
         display: flex;
+
         justify-content: center;
+
         align-items: center;
+
         padding: 30px;
       }
 
       .card {
-        max-width: 420px;
+        max-width: 430px;
+
         width: 100%;
+
         text-align: center;
       }
 
       h1 {
         font-size: 42px;
-        margin-bottom: 10px;
-        font-weight: 700;
+
+        line-height: 1.4;
+
+        letter-spacing: 2px;
       }
 
       .subtitle {
-        font-size: 18px;
-        opacity: 0.8;
-        margin-bottom: 40px;
+        margin-top: 15px;
+
+        font-size: 20px;
+
+        opacity: 0.85;
       }
 
+      .message {
+        margin-top: 35px;
+
+        line-height: 2;
+
+        opacity: 0.9;
+      }
+
+      /* 버튼 */
+
       button {
+        margin-top: 30px;
+
+        padding: 15px 35px;
+
+        border-radius: 40px;
+
+        border: 1px solid rgba(255, 255, 255, 0.4);
+
         background: rgba(255, 255, 255, 0.15);
+
         color: white;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 30px;
-        padding: 14px 35px;
+
+        font-family: inherit;
+
         font-size: 16px;
+
         cursor: pointer;
+
         transition: 0.3s;
       }
 
@@ -82,65 +130,132 @@
         background: rgba(255, 255, 255, 0.3);
       }
 
+      /* 편지 버튼 숨김 */
+
+      .hidden {
+        display: none;
+      }
+
+      /* 편지 */
+
       .letter {
         display: none;
+
         margin-top: 40px;
-        background: rgba(255, 255, 255, 0.1);
+
         padding: 30px;
-        border-radius: 20px;
-        line-height: 1.9;
+
+        border-radius: 25px;
+
+        background: rgba(255, 255, 255, 0.12);
+
         backdrop-filter: blur(10px);
-        animation: fadeIn 1.5s;
+
+        line-height: 2.1;
+
+        animation: openLetter 1.5s ease;
       }
 
       .show {
         display: block;
       }
 
-      @keyframes fadeIn {
+      @keyframes openLetter {
         from {
           opacity: 0;
-          transform: translateY(20px);
+
+          transform: translateY(40px) scale(0.95);
         }
+
         to {
           opacity: 1;
-          transform: translateY(0);
+
+          transform: translateY(0) scale(1);
         }
       }
 
-      .signature {
-        margin-top: 35px;
-        font-size: 14px;
-        opacity: 0.8;
+      /* 꽃잎 */
+
+      .petal {
+        position: fixed;
+
+        top: -30px;
+
+        z-index: 10;
+
+        animation: fall 5s linear forwards;
+      }
+
+      @keyframes fall {
+        from {
+          transform: translateY(0) rotate(0deg);
+
+          opacity: 1;
+        }
+
+        to {
+          transform: translateY(110vh) rotate(360deg);
+
+          opacity: 0;
+        }
       }
 
       .bible {
-        margin-top: 30px;
+        margin-top: 35px;
+
         font-style: italic;
-        font-size: 15px;
+      }
+
+      .signature {
+        margin-top: 30px;
+
+        opacity: 0.8;
+
+        font-size: 14px;
       }
     </style>
   </head>
 
   <body>
     <script>
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 70; i++) {
         let star = document.createElement("div");
+
         star.className = "star";
+
         star.style.left = Math.random() * 100 + "vw";
+
         star.style.top = Math.random() * 100 + "vh";
+
         star.style.animationDelay = Math.random() * 3 + "s";
+
         document.body.appendChild(star);
       }
     </script>
 
     <div class="container">
       <div class="card">
-        <h1>🎂<br />Happy Birthday</h1>
+        <h1>
+          🎂<br />
+          Happy Birthday
+        </h1>
 
         <div class="subtitle">Yoonseo</div>
 
-        <button onclick="openLetter()">💌 Open Letter</button>
+        <div class="message">
+          윤서야,<br />
+          작은 선물을 준비했어.
+        </div>
+
+        <!-- 음악 버튼 -->
+
+        <button onclick="playMusic()">🎵 이걸 먼저 눌러줘</button>
+
+        <!-- 편지 버튼 -->
+
+        <div id="letterButton" class="hidden">
+          <button onclick="openLetter()">💌 이제 편지를 열어봐</button>
+        </div>
 
         <div id="letter" class="letter">
           <p>윤서야, 생일 진심으로 축하해.</p>
@@ -172,6 +287,7 @@
 
           <div class="bible">
             Peace Be With You<br />
+
             John 20:19
           </div>
 
@@ -181,8 +297,38 @@
     </div>
 
     <script>
+      function playMusic() {
+        window.open("https://youtu.be/f-UDAjcdzbg", "_blank");
+
+        document.getElementById("letterButton").classList.remove("hidden");
+      }
+
       function openLetter() {
+        createPetals();
+
         document.getElementById("letter").classList.add("show");
+      }
+
+      function createPetals() {
+        for (let i = 0; i < 60; i++) {
+          let petal = document.createElement("div");
+
+          petal.className = "petal";
+
+          petal.innerHTML = "🌸";
+
+          petal.style.left = Math.random() * 100 + "vw";
+
+          petal.style.fontSize = 15 + Math.random() * 20 + "px";
+
+          petal.style.animationDelay = Math.random() * 2 + "s";
+
+          document.body.appendChild(petal);
+
+          setTimeout(() => {
+            petal.remove();
+          }, 6000);
+        }
       }
     </script>
   </body>
