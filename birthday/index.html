@@ -1,15 +1,189 @@
 <!doctype html>
-<html>
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Happy Birthday Yoonseo</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #0b1026, #1d2b4f);
+        color: #ffffff;
+        font-family: "Pretendard", "Noto Sans KR", sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* 별 */
+      .star {
+        position: fixed;
+        width: 3px;
+        height: 3px;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 3s infinite;
+        opacity: 0.7;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.2;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+      }
+
+      .card {
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 42px;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .subtitle {
+        font-size: 18px;
+        opacity: 0.8;
+        margin-bottom: 40px;
+      }
+
+      button {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 30px;
+        padding: 14px 35px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .letter {
+        display: none;
+        margin-top: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 30px;
+        border-radius: 20px;
+        line-height: 1.9;
+        backdrop-filter: blur(10px);
+        animation: fadeIn 1.5s;
+      }
+
+      .show {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .signature {
+        margin-top: 35px;
+        font-size: 14px;
+        opacity: 0.8;
+      }
+
+      .bible {
+        margin-top: 30px;
+        font-style: italic;
+        font-size: 15px;
+      }
+    </style>
   </head>
 
   <body>
-    <h1>🎂 Happy Birthday, Yoonseo</h1>
+    <script>
+      for (let i = 0; i < 60; i++) {
+        let star = document.createElement("div");
+        star.className = "star";
+        star.style.left = Math.random() * 100 + "vw";
+        star.style.top = Math.random() * 100 + "vh";
+        star.style.animationDelay = Math.random() * 3 + "s";
+        document.body.appendChild(star);
+      }
+    </script>
 
-    <p>윤서야 생일 축하해!</p>
+    <div class="container">
+      <div class="card">
+        <h1>🎂<br />Happy Birthday</h1>
 
-    <p>Peace Be With You</p>
+        <div class="subtitle">Yoonseo</div>
+
+        <button onclick="openLetter()">💌 Open Letter</button>
+
+        <div id="letter" class="letter">
+          <p>윤서야, 생일 진심으로 축하해.</p>
+
+          <p>
+            너와 함께 보낸 시간들이<br />
+            나에게는 생각보다 더 소중한 기억으로 남아 있어.
+          </p>
+
+          <p>
+            항상 자연스럽게 웃게 해주고,<br />
+            편안하게 함께 있을 수 있는 사람이 되어줘서 고마워.
+          </p>
+
+          <p>
+            네가 내 주변에 있다는 게 참 감사하고,<br />
+            앞으로도 좋은 추억들을 하나씩 더 만들어 가고 싶어.
+          </p>
+
+          <p>
+            생일인 오늘,<br />
+            누구보다 행복하고 평안한 하루가 되었으면 좋겠다.
+          </p>
+
+          <p>
+            하나님 안에서 늘 건강하고,<br />
+            걸어가는 모든 길 위에 평안이 함께하길 기도할게.
+          </p>
+
+          <div class="bible">
+            Peace Be With You<br />
+            John 20:19
+          </div>
+
+          <div class="signature">- 준영 -</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function openLetter() {
+        document.getElementById("letter").classList.add("show");
+      }
+    </script>
   </body>
 </html>
