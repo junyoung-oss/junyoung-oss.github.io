@@ -6,11 +6,12 @@
 
     <title>Happy Birthday Yoonseo</title>
 
+    <!-- 나눔손글씨 펜 -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Maru+Buri:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap"
       rel="stylesheet"
     />
 
@@ -24,11 +25,11 @@
 
         min-height: 100vh;
 
-        background: linear-gradient(180deg, #090f24, #20385f);
+        background: linear-gradient(180deg, #091027, #20385f);
 
         color: white;
 
-        font-family: "Maru Buri", serif;
+        font-family: "Nanum Pen Script", cursive;
 
         overflow-x: hidden;
       }
@@ -78,31 +79,33 @@
       }
 
       h1 {
-        font-size: 42px;
+        font-size: 58px;
 
-        line-height: 1.5;
+        line-height: 1.2;
 
         letter-spacing: 2px;
       }
 
       .subtitle {
-        margin-top: 10px;
+        font-size: 32px;
 
-        font-size: 20px;
+        margin-top: 10px;
       }
 
       .message {
         margin-top: 35px;
 
-        line-height: 2;
+        font-size: 28px;
 
-        opacity: 0.9;
+        line-height: 1.8;
       }
+
+      /* 버튼 */
 
       button {
         margin-top: 30px;
 
-        padding: 15px 35px;
+        padding: 14px 35px;
 
         border-radius: 40px;
 
@@ -112,9 +115,9 @@
 
         color: white;
 
-        font-family: inherit;
+        font-family: "Nanum Pen Script", cursive;
 
-        font-size: 16px;
+        font-size: 25px;
 
         cursor: pointer;
 
@@ -136,15 +139,19 @@
 
         margin-top: 40px;
 
-        padding: 30px;
+        padding: 35px 30px;
 
-        border-radius: 25px;
+        border-radius: 15px;
 
-        background: rgba(255, 255, 255, 0.12);
+        background: #fff8e8;
 
-        backdrop-filter: blur(12px);
+        color: #4a3b32;
 
-        line-height: 2.1;
+        font-size: 28px;
+
+        line-height: 1.9;
+
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 
         animation: openLetter 1.5s ease;
       }
@@ -167,7 +174,7 @@
         }
       }
 
-      /* 꽃잎 */
+      /* 꽃 */
 
       .petal {
         position: fixed;
@@ -181,7 +188,7 @@
 
       @keyframes fall {
         from {
-          transform: translateY(0) rotate(0);
+          transform: translateY(0) rotate(0deg);
 
           opacity: 1;
         }
@@ -196,15 +203,15 @@
       .bible {
         margin-top: 35px;
 
+        font-size: 25px;
+
         font-style: italic;
       }
 
       .signature {
-        margin-top: 30px;
+        margin-top: 35px;
 
-        opacity: 0.8;
-
-        font-size: 14px;
+        font-size: 24px;
       }
     </style>
   </head>
@@ -234,6 +241,7 @@
       <div class="card">
         <h1>
           🎂<br />
+
           Happy Birthday
         </h1>
 
@@ -241,6 +249,7 @@
 
         <div class="message">
           윤서야,<br />
+
           작은 선물을 준비했어.
         </div>
 
@@ -282,6 +291,7 @@
 
           <div class="bible">
             Peace Be With You<br />
+
             John 20:19
           </div>
 
@@ -294,9 +304,7 @@
       function playMusic() {
         let music = document.getElementById("bgm");
 
-        music.play().catch((error) => {
-          console.log(error);
-        });
+        music.play();
 
         document.querySelector(".music-button").innerHTML =
           "🎵 음악이 흐르고 있어";
