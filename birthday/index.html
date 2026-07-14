@@ -68,7 +68,7 @@
 
         align-items: flex-start;
 
-        padding: 50px 25px;
+        padding: 50px 20px;
       }
 
       .card {
@@ -80,7 +80,7 @@
       }
 
       h1 {
-        font-size: 60px;
+        font-size: 48px;
 
         line-height: 1.3;
 
@@ -88,23 +88,23 @@
       }
 
       .subtitle {
-        font-size: 42px;
+        font-size: 40px;
 
         margin-top: 5px;
       }
 
       .message {
-        margin-top: 35px;
+        margin-top: 30px;
 
-        font-size: 32px;
+        font-size: 28px;
 
         line-height: 1.8;
       }
 
       button {
-        margin-top: 30px;
+        margin-top: 25px;
 
-        padding: 15px 35px;
+        padding: 12px 32px;
 
         border-radius: 40px;
 
@@ -116,7 +116,7 @@
 
         font-family: inherit;
 
-        font-size: 28px;
+        font-size: 26px;
 
         cursor: pointer;
       }
@@ -125,82 +125,85 @@
         transform: scale(0.95);
       }
 
-      .hidden {
-        display: none;
-      }
-
       .story-area {
         display: none;
       }
-      #blessing {
-        display: none;
-      }
-      #blessing.show {
-        display: block;
-      }
-      .story-card {
-        margin-top: 40px;
 
+      .story-box {
+        margin-top: 35px;
+
+        margin-bottom: 10px;
+      }
+
+      .story-card {
         background: #fff8e8;
 
         color: #49392f;
 
-        padding: 35px 25px;
+        padding: 30px 22px;
 
         border-radius: 22px;
 
-        font-size: 32px;
+        font-size: 24px;
 
         line-height: 1.8;
 
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 
-        animation: openCard 0.8s ease;
+        animation: openCard 0.7s ease;
       }
 
       @keyframes openCard {
         from {
           opacity: 0;
 
-          transform: translateY(50px) rotate(-2deg);
+          transform: translateY(40px);
         }
 
         to {
           opacity: 1;
 
-          transform: translateY(0) rotate(0);
+          transform: translateY(0);
         }
       }
 
       .count {
-        margin-top: 20px;
+        margin-top: 15px;
 
-        font-size: 24px;
+        font-size: 20px;
       }
 
       .letter {
         display: none;
 
-        margin-top: 40px;
+        margin-top: 35px;
 
         background: #fff8e8;
 
         color: #49392f;
 
-        padding: 35px 25px;
+        padding: 30px 22px;
 
         border-radius: 20px;
 
-        font-size: 32px;
+        font-size: 24px;
 
-        line-height: 2;
+        line-height: 1.9;
 
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 
-        animation: openCard 0.8s ease;
+        animation: openCard 0.7s ease;
       }
 
       .show {
+        display: block;
+      }
+
+      #blessing {
+        display: none;
+      }
+
+      #blessing.show {
         display: block;
       }
 
@@ -264,12 +267,15 @@
         <button id="musicBtn" onclick="playMusic()">🎵 이걸 먼저 눌러줘</button>
 
         <div id="storyArea" class="story-area">
-          <div id="storyCard" class="story-card"></div>
+          <div class="story-box">
+            <div id="storyCard" class="story-card"></div>
+          </div>
 
           <div id="count" class="count"></div>
 
           <button onclick="nextStory()">다음 이야기 →</button>
         </div>
+
         <div id="letter" class="letter">
           <p>
             윤서야,<br />
@@ -277,26 +283,30 @@
           </p>
 
           <p>
-            너의 작은 취향들과<br />
-            좋아하는 것들을 기억하고<br />
-            이야기할 수 있다는 게 참 좋았어.
+            같이 이야기하다 보면<br />
+            윤서가 어떤 걸 좋아하고,<br />
+            어떤 생각을 하는 사람인지<br />
+            조금씩 알게 되는 게 좋았어.
           </p>
 
           <p>
-            가족을 사랑하고,<br />
-            맛있는 것을 좋아하고,<br />
-            소소한 순간에 행복해하는<br />
-            윤서라는 사람이 참 좋아.
+            가족 이야기할 때 웃는 모습,<br />
+            좋아하는 음식을 이야기할 때의 모습,<br />
+            그리고 맡은 자리에서 노력하는 모습까지
+
+            <br /><br />
+
+            윤서라는 사람이 참 좋은 것 같아.
           </p>
 
           <p>
             앞으로도 지금처럼 많이 웃고<br />
-            행복한 날들이 가득했으면 좋겠다.
+            좋은 일들이 가득했으면 좋겠다.
           </p>
 
           <p>
             하나님 안에서 늘 건강하고<br />
-            걸어가는 모든 길 위에<br />
+            걸어가는 길마다<br />
             평안이 함께하길 기도할게.
           </p>
 
@@ -321,20 +331,21 @@
 
           <p>
             공부하는 순간마다 지치지 않는 힘을 주시고,<br />
-            불안한 마음보다 하나님을 의지하는<br />
-            담대함을 가질 수 있기를 기도해.
+            걱정과 부담보다 하나님을 의지하며<br />
+            끝까지 잘 걸어갈 수 있기를 기도해.
           </p>
 
           <p>
-            준비한 모든 과정 위에<br />
-            좋은 열매가 맺히길 바라며,<br />
-            윤서가 걸어가는 모든 길 가운데<br />
+            준비한 시간들이 좋은 열매로 이어지고,<br />
+            윤서가 꿈꾸는 길 가운데<br />
             하나님께서 함께하시길 축복할게.
           </p>
 
           <p>
             "여호와는 네게 복을 주시고<br />
             너를 지키시기를 원하며<br />
+            여호와는 그의 얼굴을 네게 비추사<br />
+            은혜 베푸시기를 원하며<br />
             여호와는 그 얼굴을 네게로 향하여 드사<br />
             평강 주시기를 원하노라"
           </p>
@@ -359,7 +370,7 @@
 
 <br><br>
 
-가족 이야기를 할 때마다
+가족 이야기할 때마다
 
 즐거워하던 모습이 참 좋더라 ㅎㅎ
 `,
@@ -390,14 +401,14 @@
 
 <br><br>
 
-솔직히 걱정도 많이 했는데,
+걱정도 많이 했지만,
 
 그래도 맡은 자리에서 즐겁게<br>
 활동하는 모습이 멋있더라 ㅎㅎ
 
 <br><br>
 
-우리 멋진 회장님,<br>
+우리 회장님,<br>
 남은 기간도 힘내세요 😊
 `,
 
@@ -406,10 +417,11 @@
 
 <br><br>
 
-직장을 가지면서 조금 멀어졌던 나와 달리,
+직장을 가지면서<br>
+조금 멀어졌던 나와 달리,
 
-여전히 그 자리를 좋아하고<br>
-함께하는 모습이 참 보기 좋더라.
+여전히 대학부를 좋아하고<br>
+함께하는 모습이 보기 좋더라.
 
 <br><br>
 
@@ -423,9 +435,7 @@
 
 <br><br>
 
-이런 작은 취향들과
-
-따뜻한 마음을 가진
+이런 작은 모습들이 모여있는
 
 윤서라는 사람이야.
 `
@@ -439,8 +449,7 @@
 
           musicStarted = true;
 
-          document.getElementById("musicBtn").innerHTML =
-            "📖 이제 윤서 이야기 들어봐";
+          document.getElementById("musicBtn").innerHTML = "🎂 축하해 윤서야";
 
           return;
         }
