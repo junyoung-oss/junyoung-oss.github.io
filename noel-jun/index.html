@@ -1,3 +1,7 @@
+---
+layout: null
+---
+
 <!doctype html>
 <html lang="ko">
   <head>
@@ -5,12 +9,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Noel Jun | Growth & Experience</title>
+
     <meta
       name="description"
       content="배움을 통해 성장하고, 문제를 발견하며 더 나은 경험을 만들어가는 Noel Jun"
     />
 
-    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="{{ '/noel-jun/assets/css/style.css' | relative_url }}"
+    />
   </head>
 
   <body>
@@ -26,73 +34,128 @@
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
-
-      <section class="hero">
-        <div class="hero-content">
-          <p class="small-title">Hello, I'm JunYoung</p>
-
-          <h1>
-            배움을 통해 성장하고,<br />
-            문제를 발견하며<br />
-            더 나은 경험을 만들어가는 사람
-          </h1>
-
-          <p class="description">
-            사용자 관점에서 생각하고, 분석하고, 기록하며 개선하는 QA Engineer
-          </p>
-
-          <div class="buttons">
-            <a href="#about"> About Me </a>
-
-            <a href="#projects"> Projects </a>
-          </div>
-        </div>
-      </section>
     </header>
 
     <main>
+      <section class="hero">
+        <div class="hero-content">
+          <img
+            src="{{ '/noel-jun/assets/images/profile.jpeg' | relative_url }}"
+            alt="Noel Jun Profile"
+            class="profile"
+          />
+
+          <h1>
+            안녕하세요.<br />
+            Noel Jun 입니다.
+          </h1>
+
+          <p>
+            배움을 통해 성장하고,<br />
+            문제를 발견하며,<br />
+            더 나은 경험을 만들어가는 사람입니다.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="#about"> About Me </a>
+
+            <a href="#projects"> Projects </a>
+
+            <a href="#contact"> Contact </a>
+          </div>
+        </div>
+      </section>
+
       <section id="about">
         <h2>About Me</h2>
 
         <p>
-          새로운 것을 배우는 것을 좋아하며, 경험 속에서 성장의 의미를 찾는
-          사람입니다.
+          새로운 것을 배우는 것을 좋아하고, 경험 속에서 배움을 찾는 사람입니다.
         </p>
+
+        <p>인생과 업무 모두 과정 속에 성장과 배움이 있다고 생각합니다.</p>
       </section>
 
       <section id="journey">
         <h2>Journey</h2>
 
-        <p>
-          음악, 디자인, 제조 품질 검증, 그리고 IT QA 경험을 통해 지금의 제가
-          만들어졌습니다.
-        </p>
+        <article>
+          <h3>음악 활동과 디자인 경험</h3>
+
+          <p>
+            음악 활동을 통해 다양한 사람들과 협업하는 경험을 쌓았고, 디자인과
+            창작 과정에서 표현의 중요성을 배웠습니다.
+          </p>
+        </article>
+
+        <article>
+          <h3>제조 현장 품질 검증 경험</h3>
+
+          <p>
+            현장에서 작은 오류 하나가 전체 결과에 영향을 줄 수 있다는 것을
+            배우며 품질과 정확성의 중요성을 경험했습니다.
+          </p>
+        </article>
+
+        <article>
+          <h3>IT / QA 경험</h3>
+
+          <p>
+            서비스와 사용자의 연결 지점에서 문제를 찾고, 더 나은 경험을 만드는
+            과정의 중요성을 배웠습니다.
+          </p>
+        </article>
       </section>
 
       <section id="skills">
         <h2>Skills</h2>
 
-        <p>
-          User Perspective / Analysis / Documentation / Communication /
-          Improvement
-        </p>
+        <ul>
+          <li>User Perspective</li>
+
+          <li>Problem Analysis</li>
+
+          <li>Documentation</li>
+
+          <li>Communication</li>
+
+          <li>Continuous Improvement</li>
+        </ul>
       </section>
 
       <section id="projects">
         <h2>Projects</h2>
 
-        <p>만들어낸 결과와 개선 경험을 기록합니다.</p>
+        <div class="project-card">
+          <h3>QA Automation Tool</h3>
+
+          <p>반복적인 업무 효율화를 위한 자동화 도구 제작 및 업무 개선 경험</p>
+        </div>
+
+        <div class="project-card">
+          <h3>Game QA Project</h3>
+
+          <p>게임 서비스 품질 검증과 사용자 경험 관점의 문제 발견</p>
+        </div>
       </section>
 
       <section id="contact">
         <h2>Contact</h2>
 
         <p>좋은 경험과 새로운 가능성을 함께 만들어가고 싶습니다.</p>
+
+        <a href="mailto:stayjun-oss@naver.com"> Email </a>
+
+        <br />
+
+        <a href="https://github.com/junyoung-oss"> Github </a>
       </section>
     </main>
 
-    <footer>© Noel Jun</footer>
+    <footer>
+      <p>© Noel Jun</p>
+    </footer>
 
-    <script src="./assets/js/main.js"></script>
+    <script src="{{ '/noel-jun/assets/js/main.js' | relative_url }}"></script>
   </body>
 </html>
