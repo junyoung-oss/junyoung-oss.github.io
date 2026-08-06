@@ -1,7 +1,3 @@
----
-layout: null
----
-
 <!doctype html>
 <html lang="ko">
   <head>
@@ -10,152 +6,133 @@ layout: null
 
     <title>Noel Jun | Growth & Experience</title>
 
-    <meta
-      name="description"
-      content="배움을 통해 성장하고, 문제를 발견하며 더 나은 경험을 만들어가는 Noel Jun"
-    />
-
-    <link
-      rel="stylesheet"
-      href="{{ '/noel-jun/assets/css/style.css' | relative_url }}"
-    />
+    <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
 
   <body>
-    <header class="header">
-      <nav class="navbar">
-        <div class="logo">Noel Jun</div>
-
-        <ul class="menu">
-          <li><a href="#about">About</a></li>
-          <li><a href="#journey">Journey</a></li>
-          <li><a href="#skills">Skills</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
-    </header>
+    <!-- 오른쪽 가이드 -->
+    <nav class="side-nav">
+      <a href="#intro" class="active"></a>
+      <a href="#about"></a>
+      <a href="#journey"></a>
+      <a href="#experience"></a>
+      <a href="#contact"></a>
+    </nav>
 
     <main>
-      <section class="hero">
-        <div class="hero-content">
-          <img
-            src="{{ '/noel-jun/assets/images/profile.jpeg' | relative_url }}"
-            alt="Noel Jun Profile"
-            class="profile"
-          />
+      <section id="intro" class="section intro">
+        <div class="content fade-up">
+          <p class="small">HELLO, I'M</p>
 
-          <h1>
-            안녕하세요.<br />
-            Noel Jun 입니다.
-          </h1>
+          <h1>Noel Jun</h1>
 
-          <p>
-            배움을 통해 성장하고,<br />
-            문제를 발견하며,<br />
-            더 나은 경험을 만들어가는 사람입니다.
+          <h2>Growth & Experience</h2>
+
+          <p class="desc">
+            배움을 통해 성장하고<br />
+            문제를 발견하며<br />
+            더 나은 경험을 만들어갑니다.
           </p>
+        </div>
 
-          <div class="hero-buttons">
-            <a href="#about"> About Me </a>
+        <div class="image-box fade-right">
+          <img src="./assets/images/profile.jpeg" class="profile" />
+        </div>
+      </section>
 
-            <a href="#projects"> Projects </a>
+      <section id="about" class="section">
+        <div class="content fade-left">
+          <p class="small">ABOUT ME</p>
 
-            <a href="#contact"> Contact </a>
+          <h2>계속 성장하는 사람</h2>
+
+          <p class="desc">
+            새로운 것을 배우는 과정과<br />
+            문제를 해결하는 경험을 좋아합니다.
+
+            <br /><br />
+
+            작은 개선이 모여<br />
+            더 좋은 경험을 만든다고 믿습니다.
+          </p>
+        </div>
+
+        <div class="image-box fade-right">
+          <div class="circle-card">Growth</div>
+        </div>
+      </section>
+
+      <section id="journey" class="section">
+        <div class="image-box fade-left">
+          <div class="timeline">
+            <div>
+              01
+              <br />
+              Learning
+            </div>
+
+            <div>
+              02
+              <br />
+              Experience
+            </div>
+
+            <div>
+              03
+              <br />
+              Growth
+            </div>
+          </div>
+        </div>
+
+        <div class="content fade-right">
+          <p class="small">JOURNEY</p>
+
+          <h2>나의 여정</h2>
+
+          <p class="desc">
+            다양한 경험 속에서<br />
+            배우고 성장해왔습니다.
+          </p>
+        </div>
+      </section>
+
+      <section id="experience" class="section">
+        <div class="content fade-left">
+          <p class="small">EXPERIENCE</p>
+
+          <h2>다양한 시선</h2>
+
+          <div class="cards">
+            <div class="card">QA</div>
+
+            <div class="card">Development</div>
+
+            <div class="card">Media</div>
           </div>
         </div>
       </section>
 
-      <section id="about">
-        <h2>About Me</h2>
+      <section id="contact" class="section">
+        <div class="content fade-up">
+          <p class="small">CONTACT</p>
 
-        <p>
-          새로운 것을 배우는 것을 좋아하고, 경험 속에서 배움을 찾는 사람입니다.
-        </p>
+          <h2>Thank You</h2>
 
-        <p>인생과 업무 모두 과정 속에 성장과 배움이 있다고 생각합니다.</p>
-      </section>
-
-      <section id="journey">
-        <h2>Journey</h2>
-
-        <article>
-          <h3>음악 활동과 디자인 경험</h3>
-
-          <p>
-            음악 활동을 통해 다양한 사람들과 협업하는 경험을 쌓았고, 디자인과
-            창작 과정에서 표현의 중요성을 배웠습니다.
+          <p class="desc">
+            함께 성장하고<br />
+            좋은 경험을 만들어가고 싶습니다.
           </p>
-        </article>
 
-        <article>
-          <h3>제조 현장 품질 검증 경험</h3>
+          <div class="links">
+            <a href="https://github.com/junyoung-oss"> Github </a>
 
-          <p>
-            현장에서 작은 오류 하나가 전체 결과에 영향을 줄 수 있다는 것을
-            배우며 품질과 정확성의 중요성을 경험했습니다.
-          </p>
-        </article>
-
-        <article>
-          <h3>IT / QA 경험</h3>
-
-          <p>
-            서비스와 사용자의 연결 지점에서 문제를 찾고, 더 나은 경험을 만드는
-            과정의 중요성을 배웠습니다.
-          </p>
-        </article>
-      </section>
-
-      <section id="skills">
-        <h2>Skills</h2>
-
-        <ul>
-          <li>User Perspective</li>
-
-          <li>Problem Analysis</li>
-
-          <li>Documentation</li>
-
-          <li>Communication</li>
-
-          <li>Continuous Improvement</li>
-        </ul>
-      </section>
-
-      <section id="projects">
-        <h2>Projects</h2>
-
-        <div class="project-card">
-          <h3>QA Automation Tool</h3>
-
-          <p>반복적인 업무 효율화를 위한 자동화 도구 제작 및 업무 개선 경험</p>
+            <a href="mailto:stayjun-oss@naver.com"> Email </a>
+          </div>
         </div>
-
-        <div class="project-card">
-          <h3>Game QA Project</h3>
-
-          <p>게임 서비스 품질 검증과 사용자 경험 관점의 문제 발견</p>
-        </div>
-      </section>
-
-      <section id="contact">
-        <h2>Contact</h2>
-
-        <p>좋은 경험과 새로운 가능성을 함께 만들어가고 싶습니다.</p>
-
-        <a href="mailto:stayjun-oss@naver.com"> Email </a>
-
-        <br />
-
-        <a href="https://github.com/junyoung-oss"> Github </a>
       </section>
     </main>
 
-    <footer>
-      <p>© Noel Jun</p>
-    </footer>
-
-    <script src="{{ '/noel-jun/assets/js/main.js' | relative_url }}"></script>
+    <script src="./assets/js/main.js"></script>
   </body>
 </html>
