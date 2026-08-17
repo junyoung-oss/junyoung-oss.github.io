@@ -32,6 +32,117 @@ body {
   min-height: 100vh;
 }
 
+/* =========================================
+   🕊️ 스플래시(Splash) 화면 & 로고 스타일
+========================================= */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #fffef5 0%, #fcd535 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition:
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.5s;
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.splash-content {
+  text-align: center;
+  animation: splashPop 0.8s cubic-bezier(0.34, 1.4, 0.64, 1);
+  padding: 0 20px;
+}
+
+@keyframes splashPop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.splash-logo-wrap {
+  margin: 0 auto 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.splash-logo-img {
+  width: 160px; /* 원하는 크기로 조절 (140px ~ 180px 추천) */
+  height: auto;
+  max-width: 80vw; /* 모바일 화면 폭을 넘지 않도록 안전장치 */
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.15));
+}
+
+.splash-fallback-logo {
+  font-size: 60px;
+}
+
+.splash-title {
+  font-size: 26px;
+  font-weight: 900;
+  color: #1f2421;
+  letter-spacing: 1.2px;
+}
+
+.splash-sub {
+  font-size: 13px;
+  color: #5c4d1f;
+  margin-top: 6px;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.splash-loading-bar {
+  width: 140px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  margin: 0 auto 20px;
+  overflow: hidden;
+}
+
+.splash-loading-progress {
+  width: 0%;
+  height: 100%;
+  background: #1f2421;
+  border-radius: 4px;
+  animation: splashLoad 1.4s ease-out forwards;
+}
+
+@keyframes splashLoad {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.splash-verse {
+  display: block;
+  font-size: 11.5px;
+  color: #796826;
+  font-style: italic;
+}
+
+/* =========================================
+   메인 모바일 프레임
+========================================= */
 .mobile-wrapper {
   width: 100%;
   max-width: 440px;
@@ -44,7 +155,6 @@ body {
   overflow-x: hidden;
 }
 
-/* 헤더 */
 .app-header {
   background-color: var(--header-yellow);
   height: 54px;
@@ -60,6 +170,18 @@ body {
   justify-content: center;
 }
 
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-logo-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
 .header-title {
   font-size: 17px;
   font-weight: 900;
@@ -67,7 +189,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* 상단 묵상 말씀 배너 */
 .daily-verse-banner {
   background: #fffdf5;
   border-bottom: 1px solid #ffec99;
@@ -184,7 +305,6 @@ body {
   transform: scale(0.98);
 }
 
-/* 볼 디자인 */
 .balls-row {
   display: flex;
   align-items: center;
@@ -240,7 +360,6 @@ body {
   background-color: var(--ball-green);
 }
 
-/* 조합 결과 */
 .result-card-header {
   display: flex;
   justify-content: space-between;
@@ -318,7 +437,6 @@ body {
   }
 }
 
-/* 메뉴 리스트 */
 .menu-list {
   display: flex;
   flex-direction: column;
@@ -358,7 +476,6 @@ body {
   font-size: 18px;
 }
 
-/* 하단 고정 액션 바 */
 .bottom-action-bar {
   position: fixed;
   bottom: 0;
@@ -401,7 +518,6 @@ body {
   box-shadow: 0 4px 10px rgba(252, 213, 53, 0.4);
 }
 
-/* 바텀시트 모달 공통 */
 .modal-backdrop {
   display: none;
   position: fixed;
@@ -461,7 +577,6 @@ body {
   cursor: pointer;
 }
 
-/* 셀프조합 그리드 */
 .modal-guide {
   background: #fff9db;
   border: 1px solid #ffe066;
@@ -491,6 +606,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.1s ease;
 }
 
 .grid-ball.excluded {
@@ -528,9 +644,6 @@ body {
   cursor: pointer;
 }
 
-/* =========================================
-   오늘의 축복 카드 & 성경 말씀 팝업
-========================================= */
 .lucky-popup-backdrop {
   display: flex;
   position: fixed;
@@ -631,7 +744,6 @@ body {
   color: #212529;
 }
 
-/* 성경 말씀 인용 박스 */
 .bible-verse-box {
   background: #f8f9fa;
   border-left: 3.5px solid var(--primary-yellow);
@@ -705,7 +817,6 @@ body {
   transform: scale(0.97);
 }
 
-/* 통계 및 지도 모달 */
 .period-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

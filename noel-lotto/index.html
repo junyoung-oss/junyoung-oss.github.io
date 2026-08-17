@@ -9,22 +9,23 @@ permalink: /noel-lotto/
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
     <title>Noel Lotto — 은혜와 축복의 번호</title>
 
-    <!-- PWA 웹앱 설정 -->
+    <!-- PWA 단독 앱 설정 -->
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#fcd535" />
 
-    <!-- iOS 전용 홈 화면 설정 -->
+    <!-- 로고 파비콘 및 iOS 홈 화면 아이콘 설정 -->
+    <link rel="icon" type="image/png" href="./assets/images/logo.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="노엘로또" />
-    <link
-      rel="apple-touch-icon"
-      href="https://cdn-icons-png.flaticon.com/512/8133/8133246.png"
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
     />
+    <meta name="apple-mobile-web-app-title" content="노엘로또" />
+    <link rel="apple-touch-icon" href="./assets/images/logo.png" />
 
     <!-- 스타일시트 및 아이콘 -->
     <link rel="stylesheet" href="./assets/css/style.css" />
@@ -34,10 +35,45 @@ permalink: /noel-lotto/
     />
   </head>
   <body>
+    <!-- =========================================
+       🕊️ 앱 진입 시 스플래시 오프닝 화면 (logo.png 적용)
+  ========================================= -->
+    <div class="splash-screen" id="splash-screen">
+      <div class="splash-content">
+        <div class="splash-logo-wrap">
+          <img
+            src="./assets/images/logo.png"
+            alt="NOEL LOTTO"
+            class="splash-logo-img"
+            onerror="
+              this.outerHTML = '<div class=\'splash-fallback-logo\'>🕊️</div>'
+            "
+          />
+        </div>
+        <h1 class="splash-title">NOEL LOTTO</h1>
+        <p class="splash-sub">은혜와 지혜를 담은 축복의 번호</p>
+        <div class="splash-loading-bar">
+          <div class="splash-loading-progress"></div>
+        </div>
+        <span class="splash-verse"
+          >"너의 행사를 여호와께 맡기라 (잠 16:3)"</span
+        >
+      </div>
+    </div>
+
+    <!-- 메인 모바일 앱 프레임 -->
     <div class="mobile-wrapper">
-      <!-- 1. 상단 성경적 테마 헤더 -->
+      <!-- 1. 상단 헤더 (로고 이미지 포함) -->
       <header class="app-header center-header">
-        <h1 class="header-title">🕊️ NOEL LOTTO</h1>
+        <div class="header-brand">
+          <img
+            src="./assets/images/logo.png"
+            alt="로고"
+            class="header-logo-img"
+            onerror="this.style.display = 'none'"
+          />
+          <h1 class="header-title">NOEL LOTTO</h1>
+        </div>
       </header>
 
       <!-- 상단 오늘의 묵상 한 줄 말씀 바 -->
@@ -81,7 +117,7 @@ permalink: /noel-lotto/
             <div class="lotto-ball c-gray">-</div>
           </div>
 
-          <!-- 버튼 그룹 -->
+          <!-- 카드 하단 버튼 그룹 -->
           <div class="card-btn-group">
             <button class="sub-action-btn" id="open-filter-modal-btn">
               🎯 셀프조합 필터
@@ -97,7 +133,7 @@ permalink: /noel-lotto/
           <div class="result-card-header">
             <h2 class="section-title">✨ 지혜와 통계 조합결과</h2>
             <span class="badge-tag" id="filter-status-tag"
-              >균형 배치 가중치</span
+              >정밀 통계 대조 가중치</span
             >
           </div>
 
@@ -110,18 +146,18 @@ permalink: /noel-lotto/
         <div class="menu-list">
           <div class="menu-item" id="btn-menu-stats">
             <i class="ri-history-line menu-icon"></i>
-            <span class="menu-text">역대 당첨 통계 히스토리</span>
+            <span class="menu-text">역대 당첨 통계 히스토리 (1~6개월)</span>
             <i class="ri-arrow-right-s-line menu-arrow"></i>
           </div>
           <div class="menu-item" id="btn-menu-store">
             <i class="ri-map-pin-2-line menu-icon"></i>
-            <span class="menu-text">내 주변 복권 판매점 찾기</span>
+            <span class="menu-text">내 주변 복권 판매점 / 명당 찾기</span>
             <i class="ri-arrow-right-s-line menu-arrow"></i>
           </div>
         </div>
       </div>
 
-      <!-- 5. 하단 액션 바 -->
+      <!-- 5. 하단 고정 액션 바 -->
       <div class="bottom-action-bar">
         <button class="btn-secondary" id="copy-all-btn">
           <i class="ri-file-copy-line"></i> 전체 복사
@@ -131,11 +167,11 @@ permalink: /noel-lotto/
         </button>
       </div>
 
-      <!-- 6. 셀프조합 필터 모달 -->
+      <!-- 6. 🎯 셀프조합 필터 (제외수 설정) 모달 -->
       <div class="modal-backdrop" id="filter-modal">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 class="modal-title">셀프조합 필터 (제외 번호)</h3>
+            <h3 class="modal-title">🎯 셀프조합 필터 (제외 번호)</h3>
             <button
               class="close-modal-btn"
               id="close-filter-modal-btn"
@@ -145,7 +181,9 @@ permalink: /noel-lotto/
             </button>
           </div>
           <div class="modal-guide">
-            <p>최대 10개까지 <strong>제외할 번호</strong>를 선택해주세요.</p>
+            <p>
+              최대 10개까지 <strong>제외할 번호</strong>를 터치해 선택해주세요.
+            </p>
           </div>
           <div class="number-grid" id="number-grid"></div>
           <div class="modal-selected-info">
@@ -158,12 +196,12 @@ permalink: /noel-lotto/
             </button>
           </div>
           <button class="modal-apply-btn" id="apply-filter-btn">
-            설정 적용하고 조합 생성
+            설정 적용하고 번호 생성
           </button>
         </div>
       </div>
 
-      <!-- 7. 오늘의 축복 1조합 & 성경 말씀 카드 팝업 (부드러운 오버레이) -->
+      <!-- 7. 🕊️ 오늘의 축복 1조합 & 성경 말씀 팝업 카드 -->
       <div class="lucky-popup-backdrop" id="lucky-modal">
         <div class="lucky-card">
           <button
@@ -173,11 +211,9 @@ permalink: /noel-lotto/
           >
             <i class="ri-close-line"></i>
           </button>
-
           <div class="lucky-icon-badge">🕊️</div>
           <h3 class="lucky-title">오늘의 축복 1조합</h3>
 
-          <!-- 성경 말씀 인용 영역 -->
           <div class="bible-verse-box">
             <p class="bible-text" id="bible-verse-text">
               "사람이 마음으로 자기의 길을 계획할지라도 그의 걸음을 인도하시는
@@ -186,9 +222,7 @@ permalink: /noel-lotto/
             <span class="bible-ref" id="bible-verse-ref">잠언 16:9</span>
           </div>
 
-          <div class="lucky-balls-container" id="lucky-balls-container">
-            <!-- 6개 번호 렌더링 -->
-          </div>
+          <div class="lucky-balls-container" id="lucky-balls-container"></div>
 
           <div class="lucky-btn-group">
             <button class="lucky-card-btn primary" id="copy-single-lucky-btn">
@@ -204,7 +238,7 @@ permalink: /noel-lotto/
         </div>
       </div>
 
-      <!-- 8. 역대 당첨번호 히스토리 모달 -->
+      <!-- 8. 📊 역대 당첨번호 히스토리 모달 (1~6개월) -->
       <div class="modal-backdrop" id="stats-modal">
         <div class="modal-content history-modal-content">
           <div class="modal-header">
@@ -228,7 +262,7 @@ permalink: /noel-lotto/
         </div>
       </div>
 
-      <!-- 9. 지도 앱 선택 모달 -->
+      <!-- 9. 📍 지도 앱 선택 모달 -->
       <div class="modal-backdrop" id="map-select-modal">
         <div class="modal-content map-modal-content">
           <div class="modal-header">

@@ -36,7 +36,7 @@ const bibleVerses = [
   }
 ];
 
-// 최근 6개월(1212회 ~ 1237회) 공식 당첨 번호 데이터베이스
+// 최근 공식 당첨 데이터
 const localDrawDatabase = {
   1237: {
     drwNo: 1237,
@@ -378,7 +378,6 @@ const localDrawDatabase = {
   }
 };
 
-// 1. 공 색상 판정
 function getBallColorClass(num) {
   if (num <= 10) return 'c-yellow';
   if (num <= 20) return 'c-blue';
@@ -387,17 +386,14 @@ function getBallColorClass(num) {
   return 'c-green';
 }
 
-// 2. 번호가 속한 로또 용지의 세로열(1~7열) 계산
 function getColumnIndex(num) {
-  return ((num - 1) % 7) + 1; // 1 ~ 7 반환
+  return ((num - 1) % 7) + 1;
 }
 
-// 3. 번호가 속한 로또 용지의 가로행(1~7행) 계산
 function getRowIndex(num) {
-  return Math.floor((num - 1) / 7) + 1; // 1 ~ 7 반환
+  return Math.floor((num - 1) / 7) + 1;
 }
 
-// 4. 최신 회차 자동 계산 (2026-08-15 제1237회 기준)
 function calculateAccurateLatestDrawNo() {
   const baseDrawDate = new Date('2026-08-15T20:45:00+09:00').getTime();
   const now = new Date().getTime();
@@ -408,7 +404,6 @@ function calculateAccurateLatestDrawNo() {
   return 1237 + diffWeeks;
 }
 
-// 5. 상단 당첨 카드 UI 렌더링
 function renderDrawDataToUI(data) {
   if (!data) return;
   document.getElementById('draw-round-num').textContent = data.drwNo;
@@ -445,7 +440,6 @@ function renderDrawDataToUI(data) {
   ballsWrap.appendChild(bonus);
 }
 
-// 6. 당첨 데이터 조회
 async function getDrawData(drawNo) {
   if (localDrawDatabase[drawNo]) return localDrawDatabase[drawNo];
 
@@ -479,25 +473,79 @@ async function updateCurrentDrawView(drawNo) {
   if (data) renderDrawDataToUI(data);
 }
 
-// 7. 6개 번호 조합 생성 (가로 4개 이상 중복 방지 + 세로 3개 이상 중복 방지)
+// 과거 1등 대조 및 통계 필터 함수
+function isExactMatchWithPastWinner(sortedArr) {
+  const currentStr = sortedArr.join(',');
+  for (const key in localDrawDatabase) {
+    const item = localDrawDatabase[key];
+    const pastArr = [
+      item.drwtNo1,
+      item.drwtNo2,
+      item.drwtNo3,
+      item.drwtNo4,
+      item.drwtNo5,
+      item.drwtNo6
+    ].sort((a, b) => a - b);
+    if (pastArr.join(',') === currentStr) return true;
+  }
+  return false;
+}
+
+function hasTooManyConsecutive(sortedArr) {
+  let consecutive = 1;
+  for (let i = 0; i < sortedArr.length - 1; i++) {
+    if (sortedArr[i + 1] === sortedArr[i] + 1) {
+      consecutive++;
+      if (consecutive >= 4) return true;
+    } else {
+      consecutive = 1;
+    }
+  }
+  return false;
+}
+
+function isValidLottoCombination(sortedArr) {
+  if (isExactMatchWithPastWinner(sortedArr)) return false;
+  const sum = sortedArr.reduce((acc, cur) => acc + cur, 0);
+  if (sum < 100 || sum > 175) return false;
+  const oddCount = sortedArr.filter((n) => n % 2 !== 0).length;
+  if (oddCount < 2 || oddCount > 4) return false;
+  if (hasTooManyConsecutive(sortedArr)) return false;
+  return true;
+}
+
 function generateLottoSet() {
-  const hotNumbers = [1, 10, 12, 17, 20, 23, 34, 37, 40, 43].filter(
-    (n) => !excludedNumbers.has(n)
-  );
+  const frequencyMap = {};
+  for (let i = 1; i <= 45; i++) frequencyMap[i] = 0;
+
+  for (const key in localDrawDatabase) {
+    const item = localDrawDatabase[key];
+    for (let idx = 1; idx <= 6; idx++) {
+      const n = item[`drwtNo${idx}`];
+      if (frequencyMap[n] !== undefined) frequencyMap[n]++;
+    }
+  }
+
+  const hotNumbers = Object.keys(frequencyMap)
+    .map(Number)
+    .sort((a, b) => frequencyMap[b] - frequencyMap[a])
+    .slice(0, 15)
+    .filter((n) => !excludedNumbers.has(n));
+
   const availablePool = Array.from({ length: 45 }, (_, i) => i + 1).filter(
     (n) => !excludedNumbers.has(n)
   );
 
   let attempts = 0;
-  while (attempts < 600) {
+  while (attempts < 1000) {
     attempts++;
     const selected = new Set();
-    const colCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // 세로열(1~7): 최대 2개 허용
-    const rowCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // 가로행(1~7): 최대 3개 허용
+    const colCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
+    const rowCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
 
     while (selected.size < 6) {
       let num;
-      if (hotNumbers.length > 0 && Math.random() < 0.35) {
+      if (hotNumbers.length > 0 && Math.random() < 0.4) {
         num = hotNumbers[Math.floor(Math.random() * hotNumbers.length)];
       } else {
         num = availablePool[Math.floor(Math.random() * availablePool.length)];
@@ -507,7 +555,6 @@ function generateLottoSet() {
         const col = getColumnIndex(num);
         const row = getRowIndex(num);
 
-        // 핵심 조건: 세로열은 2개 이하 & 가로행은 3개 이하일 때만 번호 채택
         if (colCount[col] < 2 && rowCount[row] < 3) {
           selected.add(num);
           colCount[col]++;
@@ -517,15 +564,16 @@ function generateLottoSet() {
     }
 
     if (selected.size === 6) {
-      return Array.from(selected).sort((a, b) => a - b);
+      const sortedResult = Array.from(selected).sort((a, b) => a - b);
+      if (isValidLottoCombination(sortedResult)) {
+        return sortedResult;
+      }
     }
   }
 
-  // 예외 fallback
   return Array.from(new Set(availablePool.slice(0, 6))).sort((a, b) => a - b);
 }
 
-// 8. 5조합 렌더링
 function renderCombinationsWithAnimation(isAnimated = true) {
   const container = document.getElementById('combinations-container');
   container.innerHTML = '';
@@ -576,12 +624,71 @@ function renderCombinationsWithAnimation(isAnimated = true) {
   });
 }
 
-// 9. 오늘의 축복 1조합 & 성경 말씀 팝업
+// 🎯 셀프조합 필터 모달
+function initFilterModal() {
+  const modal = document.getElementById('filter-modal');
+  const openBtn = document.getElementById('open-filter-modal-btn');
+  const closeBtn = document.getElementById('close-filter-modal-btn');
+  const resetBtn = document.getElementById('reset-filter-btn');
+  const applyBtn = document.getElementById('apply-filter-btn');
+  const gridContainer = document.getElementById('number-grid');
+  const countDisplay = document.getElementById('exclude-count');
+  const tagDisplay = document.getElementById('filter-status-tag');
+
+  gridContainer.innerHTML = '';
+  for (let i = 1; i <= 45; i++) {
+    const ball = document.createElement('div');
+    ball.className = 'grid-ball';
+    ball.textContent = i;
+
+    ball.addEventListener('click', () => {
+      if (excludedNumbers.has(i)) {
+        excludedNumbers.delete(i);
+        ball.classList.remove('excluded');
+      } else {
+        if (excludedNumbers.size >= 10) {
+          alert('제외 번호는 최대 10개까지 지정 가능합니다.');
+          return;
+        }
+        excludedNumbers.add(i);
+        ball.classList.add('excluded');
+      }
+      countDisplay.textContent = excludedNumbers.size;
+    });
+
+    gridContainer.appendChild(ball);
+  }
+
+  openBtn.addEventListener('click', () => modal.classList.add('show'));
+  closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('show');
+  });
+
+  resetBtn.addEventListener('click', () => {
+    excludedNumbers.clear();
+    document
+      .querySelectorAll('#number-grid .grid-ball')
+      .forEach((b) => b.classList.remove('excluded'));
+    countDisplay.textContent = '0';
+  });
+
+  applyBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+    if (excludedNumbers.size > 0) {
+      tagDisplay.textContent = `제외수 ${excludedNumbers.size}개 적용 중`;
+    } else {
+      tagDisplay.textContent = '정밀 통계 대조 가중치';
+    }
+    renderCombinationsWithAnimation(true);
+  });
+}
+
+// 오늘의 축복 1조합 팝업
 function renderSingleLuckySetWithAnimation() {
   const wrap = document.getElementById('lucky-balls-container');
   wrap.innerHTML = '';
 
-  // 성경 말씀 랜덤 선정
   currentBibleVerse =
     bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
   document.getElementById('bible-verse-text').textContent =
@@ -647,67 +754,7 @@ function initLuckyModal() {
   });
 }
 
-// 10. 셀프조합 필터 모달
-function initFilterModal() {
-  const modal = document.getElementById('filter-modal');
-  const openBtn = document.getElementById('open-filter-modal-btn');
-  const closeBtn = document.getElementById('close-filter-modal-btn');
-  const resetBtn = document.getElementById('reset-filter-btn');
-  const applyBtn = document.getElementById('apply-filter-btn');
-  const gridContainer = document.getElementById('number-grid');
-  const countDisplay = document.getElementById('exclude-count');
-  const tagDisplay = document.getElementById('filter-status-tag');
-
-  gridContainer.innerHTML = '';
-  for (let i = 1; i <= 45; i++) {
-    const ball = document.createElement('div');
-    ball.className = 'grid-ball';
-    ball.textContent = i;
-
-    ball.addEventListener('click', () => {
-      if (excludedNumbers.has(i)) {
-        excludedNumbers.delete(i);
-        ball.classList.remove('excluded');
-      } else {
-        if (excludedNumbers.size >= 10) {
-          alert('제외 번호는 최대 10개까지 지정 가능합니다.');
-          return;
-        }
-        excludedNumbers.add(i);
-        ball.classList.add('excluded');
-      }
-      countDisplay.textContent = excludedNumbers.size;
-    });
-
-    gridContainer.appendChild(ball);
-  }
-
-  openBtn.addEventListener('click', () => modal.classList.add('show'));
-  closeBtn.addEventListener('click', () => modal.classList.remove('show'));
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.remove('show');
-  });
-
-  resetBtn.addEventListener('click', () => {
-    excludedNumbers.clear();
-    document
-      .querySelectorAll('.grid-ball')
-      .forEach((b) => b.classList.remove('excluded'));
-    countDisplay.textContent = '0';
-  });
-
-  applyBtn.addEventListener('click', () => {
-    modal.classList.remove('show');
-    if (excludedNumbers.size > 0) {
-      tagDisplay.textContent = `제외수 ${excludedNumbers.size}개 적용 중`;
-    } else {
-      tagDisplay.textContent = '균형 배치 가중치';
-    }
-    renderCombinationsWithAnimation(true);
-  });
-}
-
-// 11. 최근 통계 모달
+// 역대 통계 히스토리 모달 (1~6개월)
 async function renderHistoryList(weeksCount) {
   const container = document.getElementById('history-list-container');
   container.innerHTML = '';
@@ -771,7 +818,7 @@ function initStatsModal() {
   });
 }
 
-// 12. 지도 선택 모달
+// 지도 선택 모달
 function initMapStoreModal() {
   const modal = document.getElementById('map-select-modal');
   const openBtn = document.getElementById('btn-menu-store');
@@ -810,12 +857,17 @@ function initMapStoreModal() {
   });
 }
 
-// 13. 초기화
+// 메인 초기화 및 스플래시 종료 처리
 document.addEventListener('DOMContentLoaded', () => {
+  // 스플래시 화면 1.2초 후 페이드아웃
+  const splash = document.getElementById('splash-screen');
+  setTimeout(() => {
+    if (splash) splash.classList.add('fade-out');
+  }, 1200);
+
   maxAvailableDrawNo = calculateAccurateLatestDrawNo();
   currentDrawNo = maxAvailableDrawNo;
 
-  // 상단 메인 말씀 배너 초기화
   const randomMainVerse =
     bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
   const mainBanner = document.getElementById('main-daily-verse');
