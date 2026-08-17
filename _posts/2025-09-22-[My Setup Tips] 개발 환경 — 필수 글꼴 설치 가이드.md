@@ -43,7 +43,7 @@ brew install --cask font-noto-sans-cjk-kr
 brew install --cask font-pretendard
 ```
 
-직접 다운로드 & 설치
+## 직접 다운로드 & 설치 {#직접-다운로드--설치}
 
 일부 글꼴은 직접 내려받아 설치한다.
 
@@ -56,7 +56,7 @@ brew install --cask font-pretendard
 
 위 글꼴들은 압축 파일 다운로드 후 .otf 또는 .ttf 파일을 더블클릭 → “서체 관리자”에서 설치.
 
-VS Code / iTerm2 / Terminal 적용 {#terminal-font-setting}
+## VS Code / iTerm2 / Terminal 적용 {#terminal-font-setting}
 
 개발 환경에서는 장시간 코드를 보기 때문에 가독성이 좋은 폰트 선택이 중요하다.
 
@@ -128,3 +128,9 @@ VS Code 설정
 44. [감탄로드감탄체](https://m.blog.naver.com/bong1912/223339514703)
 45. [갈무리11](https://galmuri.quiple.dev/)
 46. [도현체](https://font.woowahan.com/dohyeon/)
+
+## 백업 체크리스트 {#backup-checklist}
+
+- [ ] 필수 코딩용 서체 설치 여부 확인
+- [ ] 서체 관리자(Font Book) 즐겨찾기 동기화
+- [ ] IDE 및 터미널 폰트 설정 적용 여부 확인
