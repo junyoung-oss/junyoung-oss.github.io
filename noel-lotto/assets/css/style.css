@@ -33,7 +33,7 @@ body {
   min-height: 100vh;
 }
 
-/* 모바일 뷰포트 컨테이너 */
+/* 모바일 프레임 컨테이너 */
 .mobile-wrapper {
   width: 100%;
   max-width: 440px;
@@ -46,7 +46,7 @@ body {
   overflow-x: hidden;
 }
 
-/* 1. 상단 헤더 */
+/* 1. 헤더 */
 .app-header {
   background-color: var(--header-yellow);
   height: 56px;
@@ -86,7 +86,7 @@ body {
   gap: 14px;
 }
 
-/* 공통 카드 */
+/* 카드 기본 스타일 */
 .card {
   background: var(--card-bg);
   border-radius: 20px;
@@ -94,7 +94,7 @@ body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
-/* 2. 최신 당첨 카드 */
+/* 2. 당첨 정보 카드 */
 .winner-header {
   display: flex;
   align-items: center;
@@ -176,7 +176,7 @@ body {
   transform: scale(0.98);
 }
 
-/* 3. 로또 볼 디자인 */
+/* 3. 로또 볼 스타일 */
 .balls-row {
   display: flex;
   align-items: center;

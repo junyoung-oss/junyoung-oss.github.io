@@ -1,23 +1,23 @@
 // 전역 상태 변수
 let excludedNumbers = new Set();
-let currentDrawNo = 1180;
-let maxAvailableDrawNo = 1180;
+let currentDrawNo = 1237;
+let maxAvailableDrawNo = 1237;
 window.currentSets = [];
 
-// 백업용 기본 데이터 (네트워크 실패/지연 시 즉시 표시)
+// 2026-08-15 기준 1237회 공식 데이터 (기본 백업용)
 const fallbackDrawData = {
   returnValue: 'success',
-  drwNo: 1180,
+  drwNo: 1237,
   drwNoDate: '2026-08-15',
   firstPrzwnerCo: 14,
   firstWinamnt: 1950000000,
-  drwtNo1: 3,
-  drwtNo2: 8,
-  drwtNo3: 17,
-  drwtNo4: 23,
-  drwtNo5: 35,
-  drwtNo6: 42,
-  bnusNo: 39
+  drwtNo1: 10,
+  drwtNo2: 20,
+  drwtNo3: 23,
+  drwtNo4: 34,
+  drwtNo5: 37,
+  drwtNo6: 40,
+  bnusNo: 36
 };
 
 // 공 색상 판정 함수
@@ -29,7 +29,24 @@ function getBallColorClass(num) {
   return 'c-green';
 }
 
-// 1. 당첨 정보 화면 UI 렌더링
+// 1. 현재 접속 시점 기준 최신 회차 정확 계산 (매주 토요일 20:45 기준)
+function calculateAccurateLatestDrawNo() {
+  // 1237회 추첨 기준 시점: 2026년 8월 15일 20시 45분 (KST)
+  const baseDrawDate = new Date('2026-08-15T20:45:00+09:00').getTime();
+  const now = new Date().getTime();
+
+  if (now < baseDrawDate) {
+    return 1237;
+  }
+
+  // 지난 주 수만큼 회차 증가
+  const diffWeeks = Math.floor(
+    (now - baseDrawDate) / (1000 * 60 * 60 * 24 * 7)
+  );
+  return 1237 + diffWeeks;
+}
+
+// 2. 당첨 정보 화면 UI 렌더링
 function renderDrawDataToUI(data) {
   if (!data || data.returnValue !== 'success') return;
 
@@ -66,43 +83,47 @@ function renderDrawDataToUI(data) {
   ballsWrap.appendChild(bonus);
 }
 
-// 2. 실시간 동행복권 API 호출 (다중 프록시 적용)
+// 3. 실시간 동행복권 API 호출 (다중 프록시 + 최신 회차 자동 탐색)
 async function loadDrawData(drawNo) {
-  const targetUrl = `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${drawNo}`;
-
-  // 프록시 목록 순차 시도
+  const getUrl = (round) =>
+    `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${round}`;
   const proxies = [
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
-    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+    (round) =>
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(getUrl(round))}`,
+    (round) => `https://corsproxy.io/?${encodeURIComponent(getUrl(round))}`
   ];
 
-  for (let proxyUrl of proxies) {
+  // 회차 데이터 조회 시도
+  for (let proxyGenerator of proxies) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 2500); // 2.5초 타임아웃
 
-      const res = await fetch(proxyUrl, { signal: controller.signal });
+      const res = await fetch(proxyGenerator(drawNo), {
+        signal: controller.signal
+      });
       clearTimeout(timeoutId);
 
       const data = await res.json();
       if (data && data.returnValue === 'success') {
         currentDrawNo = data.drwNo;
         renderDrawDataToUI(data);
-        return; // 성공 시 종료
+        return;
       }
     } catch (e) {
-      // 다음 프록시 시도
+      // 프록시 실패 시 다음 프록시 시도
     }
   }
 
-  // 모든 프록시 실패 시 백업 기본 데이터로 표시
-  fallbackDrawData.drwNo = drawNo;
-  renderDrawDataToUI(fallbackDrawData);
+  // API 실패 시 해당 회차가 1237회라면 준비된 공식 백업 데이터 표시
+  if (drawNo === 1237) {
+    renderDrawDataToUI(fallbackDrawData);
+  }
 }
 
-// 3. 단일 세트(6개) 번호 추첨 로직
+// 4. 단일 세트(6개) 번호 추첨 로직 (제외수 반영)
 function generateLottoSet() {
-  const hotNumbers = [1, 3, 12, 17, 23, 29, 34, 43, 44].filter(
+  const hotNumbers = [1, 10, 12, 17, 20, 23, 34, 37, 40, 43].filter(
     (n) => !excludedNumbers.has(n)
   );
   const availablePool = Array.from({ length: 45 }, (_, i) => i + 1).filter(
@@ -122,7 +143,7 @@ function generateLottoSet() {
   return Array.from(selected).sort((a, b) => a - b);
 }
 
-// 4. 5개 조합 화면에 롤링 애니메이션으로 렌더링
+// 5. 5개 조합 화면에 롤링 애니메이션으로 렌더링
 function renderCombinationsWithAnimation(isAnimated = true) {
   const container = document.getElementById('combinations-container');
   container.innerHTML = '';
@@ -174,7 +195,7 @@ function renderCombinationsWithAnimation(isAnimated = true) {
   });
 }
 
-// 5. 셀프조합 모달 초기화
+// 6. 셀프조합 모달 바텀시트 초기화
 function initFilterModal() {
   const modal = document.getElementById('filter-modal');
   const openBtn = document.getElementById('open-filter-modal-btn');
@@ -234,21 +255,19 @@ function initFilterModal() {
   });
 }
 
-// 6. 실행 진입점
+// 7. 메인 실행 진입점
 document.addEventListener('DOMContentLoaded', () => {
-  // 1) 즉시 초기 화면 데이터 채우기 (빈칸 방지)
+  // 1) 즉시 초기 화면 렌더링 (빈칸 방지)
   renderDrawDataToUI(fallbackDrawData);
   renderCombinationsWithAnimation(false);
   initFilterModal();
 
-  // 2) 비동기로 최신 당첨 번호 실시간 조회
-  const firstDraw = new Date('2002-12-07T21:00:00+09:00');
-  const diffDays = Math.floor((new Date() - firstDraw) / (1000 * 60 * 60 * 24));
-  maxAvailableDrawNo = Math.floor(diffDays / 7) + 1;
+  // 2) 접속 시간 기준 최신 회차 자동 계산 및 실시간 패치
+  maxAvailableDrawNo = calculateAccurateLatestDrawNo();
   currentDrawNo = maxAvailableDrawNo;
   loadDrawData(currentDrawNo);
 
-  // 이전/다음 회차 버튼 이벤트
+  // 이전/다음 회차 탐색 버튼 이벤트
   document.getElementById('prev-draw-btn').addEventListener('click', () => {
     if (currentDrawNo > 1) {
       currentDrawNo--;
