@@ -1,3 +1,7 @@
+/* =========================
+   Reset
+========================= */
+
 * {
   margin: 0;
   padding: 0;
@@ -10,21 +14,33 @@ html {
 
 body {
   background: #ffffff;
-
   color: #111111;
 
-  font-family: Pretendard, Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR',
+    'Helvetica Neue', Arial, sans-serif;
 
   line-height: 1.6;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 a {
   color: inherit;
-
   text-decoration: none;
 }
 
+button {
+  font: inherit;
+}
+
 section {
+  width: 100%;
   max-width: 1400px;
 
   margin: 0 auto;
@@ -32,194 +48,415 @@ section {
   padding: 160px 60px;
 }
 
-/* =====================
- Header
-===================== */
+/* =========================
+   Header
+========================= */
 
 .header {
   position: fixed;
 
   top: 0;
-
   left: 0;
 
   width: 100%;
+  height: 90px;
 
-  padding: 30px 60px;
+  padding: 0 60px;
 
   display: flex;
-
+  align-items: center;
   justify-content: space-between;
 
-  align-items: center;
+  background: rgba(255, 255, 255, 0.92);
 
-  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
-  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 
   z-index: 100;
 }
 
 .logo {
-  font-size: 24px;
+  font-size: 21px;
 
-  font-weight: 800;
+  font-weight: 700;
 
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
 }
 
-.header nav {
+/* =========================
+   Desktop Navigation
+========================= */
+
+.desktop-nav {
   display: flex;
 
-  gap: 35px;
+  align-items: center;
+
+  gap: 34px;
 }
 
-.header nav a {
-  color: #777;
+.desktop-nav a {
+  position: relative;
 
-  font-size: 14px;
+  color: #777777;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  letter-spacing: 1.5px;
+
+  transition: color 0.25s ease;
 }
 
-.header nav a:hover {
-  color: #111;
+.desktop-nav a::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  bottom: -7px;
+
+  width: 0;
+  height: 1px;
+
+  background: #111111;
+
+  transition: width 0.25s ease;
 }
 
-/* =====================
- Hero
-===================== */
+.desktop-nav a:hover {
+  color: #111111;
+}
+
+.desktop-nav a:hover::after {
+  width: 100%;
+}
+
+/* =========================
+   Mobile Menu Button
+========================= */
+
+.menu-toggle {
+  display: none;
+
+  width: 42px;
+  height: 42px;
+
+  padding: 8px;
+
+  border: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 5px;
+}
+
+.menu-toggle span {
+  display: block;
+
+  width: 100%;
+  height: 2px;
+
+  background: #111111;
+
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+/* =========================
+   Mobile Menu
+========================= */
+
+.mobile-menu {
+  position: fixed;
+
+  top: 0;
+  right: 0;
+
+  width: 100%;
+  height: 100vh;
+
+  padding: 25px;
+
+  background: #ffffff;
+
+  z-index: 200;
+
+  transform: translateX(100%);
+
+  transition: transform 0.35s ease;
+
+  visibility: hidden;
+}
+
+/* Mobile Menu Open */
+
+.mobile-menu.active {
+  transform: translateX(0);
+
+  visibility: visible;
+}
+
+.mobile-menu-close {
+  display: block;
+
+  margin-left: auto;
+
+  width: 42px;
+  height: 42px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #111111;
+
+  font-size: 38px;
+
+  font-weight: 300;
+
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.mobile-menu nav {
+  margin-top: 75px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 25px;
+}
+
+.mobile-menu nav a {
+  font-size: 42px;
+
+  font-weight: 600;
+
+  letter-spacing: -2px;
+
+  transition: opacity 0.2s ease;
+}
+
+.mobile-menu nav a:hover {
+  opacity: 0.5;
+}
+
+/* =========================
+   Hero
+========================= */
 
 .hero {
   min-height: 100vh;
 
-  display: flex;
+  padding-top: 150px;
 
-  justify-content: space-between;
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    360px;
 
   align-items: center;
 
-  gap: 100px;
+  gap: 80px;
 }
 
 .hero-content {
-  flex: 1;
+  min-width: 0;
 }
 
 .hero-subtitle {
-  color: #888;
-
-  font-size: 18px;
-
   margin-bottom: 30px;
+
+  color: #777777;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  letter-spacing: 3px;
 }
 
 .hero h1 {
-  font-size: 150px;
+  font-size: clamp(80px, 12vw, 180px);
 
-  line-height: 0.9;
+  line-height: 0.82;
 
-  letter-spacing: -8px;
+  font-weight: 700;
 
-  font-weight: 900;
+  letter-spacing: -9px;
 }
 
 .hero h2 {
-  margin-top: 40px;
+  margin-top: 25px;
 
-  font-size: 80px;
+  font-size: clamp(55px, 7vw, 105px);
 
-  letter-spacing: -4px;
+  line-height: 1;
+
+  font-weight: 400;
+
+  letter-spacing: -5px;
 }
 
 .hero-description {
-  margin-top: 40px;
-
   max-width: 650px;
 
-  color: #666;
+  margin-top: 50px;
 
-  font-size: 22px;
+  color: #555555;
+
+  font-size: 18px;
+
+  line-height: 1.85;
 }
 
 .hero-actions {
-  margin-top: 50px;
+  margin-top: 40px;
 
   display: flex;
 
-  gap: 20px;
+  gap: 12px;
+
+  flex-wrap: wrap;
 }
 
 .hero-actions a {
-  padding: 15px 35px;
+  display: inline-flex;
 
-  border: 1px solid #111;
+  align-items: center;
+  justify-content: center;
 
-  border-radius: 50px;
+  min-height: 48px;
 
-  transition: 0.3s;
+  padding: 13px 26px;
+
+  border: 1px solid #222222;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.5px;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
 }
 
 .hero-actions a:hover {
-  background: #111;
+  background: #111111;
 
-  color: white;
+  color: #ffffff;
+
+  transform: translateY(-2px);
 }
 
-/* Profile */
+/* =========================
+   Profile
+========================= */
 
-.profile {
-  width: 420px;
+.hero-profile {
+  position: relative;
 
-  height: 520px;
+  width: 100%;
+  height: 500px;
+}
 
-  border-radius: 30px;
+.profile-image {
+  position: absolute;
 
   overflow: hidden;
+
+  background: #eeeeee;
+
+  border-radius: 24px;
 }
 
-.profile img {
+.profile-image img {
   width: 100%;
-
   height: 100%;
 
   object-fit: cover;
 }
 
-/* =====================
- Common
-===================== */
+.profile-image-main {
+  top: 0;
+  right: 0;
+
+  width: 290px;
+  height: 390px;
+
+  transform: rotate(3deg);
+}
+
+.profile-image-secondary {
+  right: 190px;
+  bottom: 0;
+
+  width: 190px;
+  height: 240px;
+
+  border: 8px solid #ffffff;
+
+  transform: rotate(-7deg);
+}
+
+/* =========================
+   Common Section
+========================= */
 
 .section-label {
-  color: #999;
+  margin-bottom: 28px;
 
-  font-size: 13px;
+  color: #888888;
 
-  letter-spacing: 5px;
+  font-size: 11px;
 
-  text-transform: uppercase;
+  font-weight: 600;
 
-  margin-bottom: 40px;
+  letter-spacing: 4px;
 }
 
 section h2 {
-  font-size: 70px;
+  margin-bottom: 55px;
 
-  line-height: 1.1;
+  font-size: clamp(52px, 7vw, 90px);
 
-  letter-spacing: -4px;
+  line-height: 1;
 
-  margin-bottom: 50px;
+  font-weight: 600;
+
+  letter-spacing: -5px;
 }
 
-/* =====================
- About
-===================== */
+/* =========================
+   About
+========================= */
 
-#about > p:not(.section-label) {
-  font-size: 24px;
+.about-intro {
+  max-width: 760px;
 
-  color: #555;
+  color: #555555;
 
-  max-width: 750px;
+  font-size: 20px;
+
+  line-height: 1.9;
 }
 
 .value-container {
@@ -229,184 +466,275 @@ section h2 {
 
   grid-template-columns: repeat(3, 1fr);
 
-  gap: 40px;
+  gap: 45px;
 }
 
 .value-container article {
-  border-top: 1px solid #ddd;
+  padding-top: 28px;
 
-  padding-top: 30px;
+  border-top: 1px solid #dddddd;
+}
+
+.value-number {
+  display: block;
+
+  margin-bottom: 25px;
+
+  color: #bbbbbb;
+
+  font-size: 12px;
+
+  letter-spacing: 2px;
 }
 
 .value-container h3 {
-  font-size: 32px;
+  margin-bottom: 18px;
 
-  margin-bottom: 20px;
+  font-size: 30px;
+
+  font-weight: 600;
+
+  letter-spacing: -1px;
 }
 
 .value-container p {
-  color: #666;
+  color: #777777;
+
+  font-size: 16px;
+
+  line-height: 1.8;
 }
 
-/* =====================
- Journey
-===================== */
+/* =========================
+   Journey
+========================= */
 
 .timeline {
   display: flex;
 
   flex-direction: column;
 
-  gap: 80px;
+  gap: 85px;
 }
 
 .timeline article {
   display: grid;
 
-  grid-template-columns: 120px 1fr;
+  grid-template-columns: 120px minmax(0, 700px);
+
+  gap: 20px;
 }
 
-.timeline span {
-  font-size: 60px;
+.timeline-number {
+  color: #cccccc;
 
-  color: #ddd;
+  font-size: 50px;
+
+  font-weight: 600;
+
+  line-height: 1;
 }
 
 .timeline h3 {
-  font-size: 42px;
-
   margin-bottom: 15px;
+
+  font-size: 40px;
+
+  font-weight: 600;
+
+  letter-spacing: -2px;
 }
 
 .timeline p {
-  color: #666;
+  color: #777777;
+
+  font-size: 17px;
+
+  line-height: 1.8;
 }
 
-/* =====================
- Experience
-===================== */
+/* =========================
+   Experience
+========================= */
 
 .experience-grid {
   display: grid;
 
   grid-template-columns: repeat(3, 1fr);
 
-  gap: 30px;
+  gap: 24px;
 }
 
 .experience-grid article {
-  padding: 40px;
+  min-height: 310px;
 
-  background: #fafafa;
+  padding: 38px;
 
-  border: 1px solid #eee;
+  background: #f7f7f7;
+
+  border: 1px solid #eeeeee;
 
   border-radius: 20px;
+
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
+}
+
+.experience-grid article:hover {
+  transform: translateY(-6px);
+
+  background: #f2f2f2;
+}
+
+.card-number {
+  display: block;
+
+  margin-bottom: 40px;
+
+  color: #aaaaaa;
+
+  font-size: 12px;
+
+  letter-spacing: 2px;
 }
 
 .experience-grid h3 {
+  margin-bottom: 18px;
+
   font-size: 30px;
 
-  margin-bottom: 20px;
+  font-weight: 600;
+
+  letter-spacing: -1px;
 }
 
 .experience-grid p {
-  color: #666;
+  color: #666666;
+
+  font-size: 16px;
+
+  line-height: 1.8;
 }
 
-/* =====================
- Projects
-===================== */
+/* =========================
+   Projects
+========================= */
 
 .project-card {
   padding: 60px 0;
 
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #dddddd;
+}
+
+.project-card:last-child {
+  border-bottom: 1px solid #dddddd;
+}
+
+.project-meta {
+  margin-bottom: 20px;
+
+  color: #999999;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  letter-spacing: 3px;
 }
 
 .project-card h3 {
-  font-size: 60px;
-
-  letter-spacing: -3px;
-
   margin-bottom: 20px;
+
+  font-size: clamp(42px, 6vw, 72px);
+
+  line-height: 1;
+
+  font-weight: 600;
+
+  letter-spacing: -4px;
 }
 
 .project-card p {
-  font-size: 20px;
+  max-width: 760px;
 
-  color: #666;
+  color: #666666;
+
+  font-size: 18px;
+
+  line-height: 1.8;
 }
 
-/* =====================
- Contact
-===================== */
+/* =========================
+   Contact
+========================= */
 
-#contact {
-  min-height: 70vh;
-}
-
-#contact p:last-child {
-  color: #666;
-
-  font-size: 22px;
-}
-
-/* =====================
- Footer
-===================== */
-
-footer {
-  padding: 50px 60px;
-
-  border-top: 1px solid #eee;
+.contact {
+  min-height: 75vh;
 
   display: flex;
 
-  justify-content: space-between;
+  flex-direction: column;
 
-  color: #999;
+  justify-content: center;
 }
 
-/* =====================
- Mobile
-===================== */
+.contact-description {
+  max-width: 650px;
 
-@media (max-width: 768px) {
-  section {
-    padding: 100px 25px;
-  }
+  color: #666666;
 
+  font-size: 20px;
+
+  line-height: 1.8;
+}
+
+/* =========================
+   Footer
+========================= */
+
+footer {
+  padding: 45px 60px;
+
+  border-top: 1px solid #eeeeee;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  color: #999999;
+
+  font-size: 11px;
+
+  letter-spacing: 1px;
+}
+
+/* =========================
+   Tablet
+========================= */
+
+@media screen and (max-width: 1000px) {
   .header {
-    padding: 25px;
+    padding: 0 35px;
   }
 
-  .header nav {
-    display: none;
+  section {
+    padding: 130px 35px;
   }
 
   .hero {
-    flex-direction: column-reverse;
+    grid-template-columns: 1fr;
 
-    align-items: flex-start;
+    gap: 60px;
 
-    gap: 50px;
+    padding-top: 140px;
   }
 
-  .hero h1 {
-    font-size: 70px;
-  }
+  .hero-profile {
+    height: 400px;
 
-  .hero h2 {
-    font-size: 45px;
-  }
-
-  .profile {
-    width: 100%;
-
-    max-width: 350px;
-
-    height: 430px;
+    max-width: 500px;
   }
 
   .value-container {
@@ -416,8 +744,312 @@ footer {
   .experience-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media screen and (max-width: 768px) {
+  section {
+    padding: 105px 25px;
+  }
+
+  /* Header */
+
+  .header {
+    height: 75px;
+
+    padding: 0 25px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  /* Mobile Menu */
+
+  .mobile-menu {
+    height: 100dvh;
+
+    padding: 20px 25px;
+  }
+
+  .mobile-menu.active {
+    transform: translateX(0);
+  }
+
+  /* Hero */
+
+  .hero {
+    min-height: 100svh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    gap: 50px;
+
+    padding-top: 110px;
+  }
+
+  .hero-subtitle {
+    margin-bottom: 22px;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+  }
+
+  .hero h1 {
+    font-size: 72px;
+
+    letter-spacing: -5px;
+  }
+
+  .hero h2 {
+    margin-top: 16px;
+
+    font-size: 52px;
+
+    letter-spacing: -3px;
+  }
+
+  .hero-description {
+    margin-top: 35px;
+
+    font-size: 16px;
+
+    line-height: 1.85;
+  }
+
+  .hero-actions {
+    margin-top: 30px;
+  }
+
+  .hero-actions a {
+    min-height: 45px;
+
+    padding: 11px 21px;
+
+    font-size: 11px;
+  }
+
+  /* Profile */
+
+  .hero-profile {
+    width: 100%;
+
+    max-width: 360px;
+
+    height: 300px;
+
+    margin: 0 auto;
+  }
+
+  .profile-image-main {
+    width: 210px;
+    height: 280px;
+
+    right: 0;
+  }
+
+  .profile-image-secondary {
+    width: 150px;
+    height: 190px;
+
+    right: 130px;
+
+    border-width: 6px;
+  }
+
+  /* Common */
+
+  .section-label {
+    margin-bottom: 22px;
+
+    font-size: 10px;
+
+    letter-spacing: 3px;
+  }
+
+  section h2 {
+    margin-bottom: 40px;
+
+    font-size: 50px;
+
+    letter-spacing: -4px;
+  }
+
+  /* About */
+
+  .about-intro {
+    font-size: 17px;
+
+    line-height: 1.85;
+  }
+
+  .value-container {
+    margin-top: 65px;
+
+    grid-template-columns: 1fr;
+
+    gap: 55px;
+  }
+
+  .value-container h3 {
+    font-size: 27px;
+  }
+
+  /* Journey */
+
+  .timeline {
+    gap: 65px;
+  }
 
   .timeline article {
     grid-template-columns: 1fr;
+
+    gap: 12px;
+  }
+
+  .timeline-number {
+    font-size: 32px;
+  }
+
+  .timeline h3 {
+    font-size: 32px;
+
+    letter-spacing: -1px;
+  }
+
+  .timeline p {
+    font-size: 16px;
+  }
+
+  /* Experience */
+
+  .experience-grid {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+  .experience-grid article {
+    min-height: auto;
+
+    padding: 30px;
+  }
+
+  .card-number {
+    margin-bottom: 30px;
+  }
+
+  .experience-grid h3 {
+    font-size: 27px;
+  }
+
+  /* Projects */
+
+  .project-card {
+    padding: 45px 0;
+  }
+
+  .project-card h3 {
+    font-size: 42px;
+
+    letter-spacing: -2px;
+  }
+
+  .project-card p {
+    font-size: 16px;
+  }
+
+  /* Contact */
+
+  .contact {
+    min-height: 70vh;
+  }
+
+  .contact-description {
+    font-size: 17px;
+  }
+
+  /* Footer */
+
+  footer {
+    padding: 40px 25px;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    font-size: 10px;
+  }
+
+  /* Mobile Navigation */
+
+  .mobile-menu nav {
+    margin-top: 65px;
+
+    gap: 23px;
+  }
+
+  .mobile-menu nav a {
+    font-size: 36px;
+
+    letter-spacing: -2px;
+  }
+}
+
+/* =========================
+   Small Mobile
+========================= */
+
+@media screen and (max-width: 420px) {
+  .hero h1 {
+    font-size: 60px;
+  }
+
+  .hero h2 {
+    font-size: 45px;
+  }
+
+  section h2 {
+    font-size: 44px;
+  }
+
+  .hero-profile {
+    height: 260px;
+  }
+
+  .profile-image-main {
+    width: 185px;
+    height: 245px;
+  }
+
+  .profile-image-secondary {
+    width: 135px;
+    height: 175px;
+
+    right: 110px;
+  }
+
+  .mobile-menu nav a {
+    font-size: 32px;
   }
 }

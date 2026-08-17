@@ -1,86 +1,120 @@
-document.addEventListener('DOMContentLoaded', () => {
-  /*
-    =================================
-    Scroll Reveal Animation
-    =================================
-    */
+/* =========================
+   Mobile Navigation
+========================= */
 
-  const sections = document.querySelectorAll('section');
+document.addEventListener('DOMContentLoaded', function () {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const mobileMenuClose = document.querySelector('.mobile-menu-close');
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('show');
-        }
-      });
-    },
-    {
-      threshold: 0.15
+  const mobileLinks = document.querySelectorAll('.mobile-menu nav a');
+
+  /* =========================
+       Open Menu
+    ========================== */
+
+  function openMenu() {
+    if (!mobileMenu) {
+      return;
     }
-  );
 
-  sections.forEach((section) => {
-    section.classList.add('hidden');
+    mobileMenu.classList.add('active');
 
-    observer.observe(section);
-  });
+    document.body.style.overflow = 'hidden';
 
-  /*
-    =================================
-    Smooth Navigation
-    =================================
-    */
+    if (menuToggle) {
+      menuToggle.setAttribute('aria-expanded', 'true');
 
-  const links = document.querySelectorAll('header nav a');
+      menuToggle.setAttribute('aria-label', '메뉴 닫기');
+    }
+  }
 
-  links.forEach((link) => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
+  /* =========================
+       Close Menu
+    ========================== */
 
-      const target = document.querySelector(link.getAttribute('href'));
+  function closeMenu() {
+    if (!mobileMenu) {
+      return;
+    }
 
-      target.scrollIntoView({
-        behavior: 'smooth'
-      });
+    mobileMenu.classList.remove('active');
+
+    document.body.style.overflow = '';
+
+    if (menuToggle) {
+      menuToggle.setAttribute('aria-expanded', 'false');
+
+      menuToggle.setAttribute('aria-label', '메뉴 열기');
+    }
+  }
+
+  /* =========================
+       Toggle Menu
+    ========================== */
+
+  if (menuToggle) {
+    menuToggle.addEventListener('click', function () {
+      if (mobileMenu && mobileMenu.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+  }
+
+  /* =========================
+       Close Button
+    ========================== */
+
+  if (mobileMenuClose) {
+    mobileMenuClose.addEventListener('click', function () {
+      closeMenu();
+    });
+  }
+
+  /* =========================
+       Navigation Link
+       Click → Close Menu
+    ========================== */
+
+  mobileLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      closeMenu();
     });
   });
 
-  /*
-    =================================
-    Header Background Change
-    =================================
-    */
+  /* =========================
+       ESC → Close Menu
+    ========================== */
 
-  const header = document.querySelector('.header');
-
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeMenu();
     }
   });
 
-  /*
-    =================================
-    Hero Text Animation
-    =================================
-    */
+  /* =========================
+       Click Outside
+    ========================== */
 
-  const heroElements = document.querySelectorAll('.hero > *');
+  if (mobileMenu) {
+    mobileMenu.addEventListener('click', function (event) {
+      if (event.target === mobileMenu) {
+        closeMenu();
+      }
+    });
+  }
 
-  heroElements.forEach((element, index) => {
-    element.style.opacity = '0';
+  /* =========================
+       Resize
+       PC 화면으로 커졌을 때
+       모바일 메뉴 자동 닫기
+    ========================== */
 
-    element.style.transform = 'translateY(40px)';
-
-    setTimeout(() => {
-      element.style.transition = 'all 0.8s ease';
-
-      element.style.opacity = '1';
-
-      element.style.transform = 'translateY(0)';
-    }, index * 150);
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768) {
+      closeMenu();
+    }
   });
 });

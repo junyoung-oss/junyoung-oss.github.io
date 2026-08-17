@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>행운로또번호 - AI 스마트 추천</title>
+    <!-- 상대 경로로 수정: ./assets/css/style.css -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <!-- 아이콘 폰트 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- 모바일 프레임 래퍼 -->
+    <div class="mobile-wrapper">
+      <!-- 1. 상단 옐로우 헤더 -->
+      <header class="app-header">
+        <button class="icon-btn" id="menu-btn" aria-label="메뉴">
+          <i class="ri-menu-line"></i>
+        </button>
+        <h1 class="header-title">행운로또번호</h1>
+        <button class="icon-btn" id="share-btn" aria-label="공유">
+          <i class="ri-share-forward-line"></i>
+        </button>
+      </header>
+
+      <div class="app-content">
+        <!-- 2. 실시간 최신 당첨 카드 -->
+        <div class="card winner-card">
+          <div class="winner-header">
+            <button class="nav-arrow" id="prev-draw-btn" aria-label="이전 회차">
+              <i class="ri-arrow-left-s-line"></i>
+            </button>
+            <div class="draw-info">
+              <div class="draw-round"><span id="draw-round-num">-</span>회</div>
+              <div class="draw-date" id="draw-date-text">조회 중...</div>
+            </div>
+            <div class="draw-prize">
+              <span class="prize-sub" id="prize-winners">1등 당첨자 -명</span>
+              <span class="prize-main" id="prize-amount">1인당 약 -억원</span>
+            </div>
+            <button class="nav-arrow" id="next-draw-btn" aria-label="다음 회차">
+              <i class="ri-arrow-right-s-line"></i>
+            </button>
+          </div>
+
+          <!-- 당첨 볼 영역 -->
+          <div class="balls-row center" id="winning-balls-container">
+            <div class="lotto-ball c-yellow">-</div>
+            <div class="lotto-ball c-yellow">-</div>
+            <div class="lotto-ball c-blue">-</div>
+            <div class="lotto-ball c-red">-</div>
+            <div class="lotto-ball c-gray">-</div>
+            <div class="lotto-ball c-green">-</div>
+            <span class="plus-sign">+</span>
+            <div class="lotto-ball c-gray">-</div>
+          </div>
+
+          <!-- 카드 하단 버튼 그룹 -->
+          <div class="card-btn-group">
+            <button class="sub-action-btn" id="open-filter-modal-btn">
+              🎯 셀프조합 필터
+            </button>
+            <button class="sub-action-btn highlight" id="today-lucky-btn">
+              🍀 오늘 1조합 추천
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. 추천 번호 조합 리스트 (5조합) -->
+        <div class="card result-card">
+          <div class="result-card-header">
+            <h2 class="section-title">✨ AI 예상번호 조합결과</h2>
+            <span class="badge-tag" id="filter-status-tag"
+              >기본 통계 가중치</span
+            >
+          </div>
+
+          <div class="combinations-list" id="combinations-container">
+            <!-- JS로 자동 렌더링 -->
+          </div>
+        </div>
+
+        <!-- 4. 하단 부가 메뉴 리스트 -->
+        <div class="menu-list">
+          <div class="menu-item" id="btn-menu-stats">
+            <i class="ri-bar-chart-box-line menu-icon"></i>
+            <span class="menu-text">역대 당첨번호 통계 분석</span>
+            <i class="ri-arrow-right-s-line menu-arrow"></i>
+          </div>
+          <div class="menu-item" id="btn-menu-store">
+            <i class="ri-store-2-line menu-icon"></i>
+            <span class="menu-text">전국 1등 로또 명당 찾기</span>
+            <i class="ri-arrow-right-s-line menu-arrow"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 하단 고정 액션 바 -->
+      <div class="bottom-action-bar">
+        <button class="btn-secondary" id="copy-all-btn">
+          <i class="ri-file-copy-line"></i> 번호 복사
+        </button>
+        <button class="btn-primary" id="regenerate-btn">
+          <i class="ri-refresh-line"></i> 번호 재생성
+        </button>
+      </div>
+
+      <!-- 6. 셀프조합 설정 모달 (바텀시트) -->
+      <div class="modal-backdrop" id="filter-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">셀프조합 사용방법</h3>
+            <button
+              class="close-modal-btn"
+              id="close-modal-btn"
+              aria-label="닫기"
+            >
+              <i class="ri-close-line"></i>
+            </button>
+          </div>
+
+          <div class="modal-guide">
+            <p>
+              최소 0개 ~ 최대 10개까지 <strong>제외할 번호</strong>를
+              선택해주세요.
+            </p>
+          </div>
+
+          <!-- 1~45 번호판 그리드 -->
+          <div class="number-grid" id="number-grid"></div>
+
+          <div class="modal-selected-info">
+            <span
+              >선택된 제외 번호: <strong id="exclude-count">0</strong> /
+              10개</span
+            >
+            <button class="reset-filter-btn" id="reset-filter-btn">
+              전체 초기화
+            </button>
+          </div>
+
+          <button class="modal-apply-btn" id="apply-filter-btn">
+            설정 적용하고 번호 생성
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 상대 경로로 수정: ./assets/js/lotto.js -->
+    <script src="./assets/js/lotto.js"></script>
+  </body>
+</html>
