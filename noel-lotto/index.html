@@ -11,16 +11,16 @@ permalink: /noel-lotto/
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>행운로또번호 - AI 스마트 추천</title>
+    <title>Noel Lotto — 은혜와 축복의 번호</title>
 
     <!-- PWA 웹앱 설정 -->
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#fcd535" />
 
-    <!-- iOS(아이폰) 전용 홈 화면 추가 설정 -->
+    <!-- iOS 전용 홈 화면 설정 -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="행운로또" />
+    <meta name="apple-mobile-web-app-title" content="노엘로또" />
     <link
       rel="apple-touch-icon"
       href="https://cdn-icons-png.flaticon.com/512/8133/8133246.png"
@@ -34,15 +34,23 @@ permalink: /noel-lotto/
     />
   </head>
   <body>
-    <!-- 모바일 프레임 래퍼 -->
     <div class="mobile-wrapper">
-      <!-- 1. 상단 심플 헤더 (햄버거/공유 버튼 제거) -->
+      <!-- 1. 상단 성경적 테마 헤더 -->
       <header class="app-header center-header">
-        <h1 class="header-title">🍀 행운로또번호</h1>
+        <h1 class="header-title">🕊️ NOEL LOTTO</h1>
       </header>
 
+      <!-- 상단 오늘의 묵상 한 줄 말씀 바 -->
+      <div class="daily-verse-banner" id="main-daily-verse">
+        <span class="verse-content"
+          >"너의 행사를 여호와께 맡기라 그리하면 네가 경영하는 것이
+          이루어지리라"</span
+        >
+        <span class="verse-tag">잠언 16:3</span>
+      </div>
+
       <div class="app-content">
-        <!-- 2. 실시간 최신 당첨 카드 -->
+        <!-- 2. 최신 당첨 회차 카드 -->
         <div class="card winner-card">
           <div class="winner-header">
             <button class="nav-arrow" id="prev-draw-btn" aria-label="이전 회차">
@@ -73,13 +81,13 @@ permalink: /noel-lotto/
             <div class="lotto-ball c-gray">-</div>
           </div>
 
-          <!-- 카드 하단 버튼 그룹 -->
+          <!-- 버튼 그룹 -->
           <div class="card-btn-group">
             <button class="sub-action-btn" id="open-filter-modal-btn">
               🎯 셀프조합 필터
             </button>
             <button class="sub-action-btn highlight" id="today-lucky-btn">
-              🍀 오늘 1조합 추천
+              🕊️ 오늘의 축복 1조합
             </button>
           </div>
         </div>
@@ -87,9 +95,9 @@ permalink: /noel-lotto/
         <!-- 3. 추천 번호 조합 리스트 (5조합) -->
         <div class="card result-card">
           <div class="result-card-header">
-            <h2 class="section-title">✨ AI 예상번호 조합결과</h2>
+            <h2 class="section-title">✨ 지혜와 통계 조합결과</h2>
             <span class="badge-tag" id="filter-status-tag"
-              >기본 통계 가중치</span
+              >균형 배치 가중치</span
             >
           </div>
 
@@ -98,36 +106,36 @@ permalink: /noel-lotto/
           </div>
         </div>
 
-        <!-- 4. 하단 부가 메뉴 리스트 -->
+        <!-- 4. 하단 부가 메뉴 -->
         <div class="menu-list">
           <div class="menu-item" id="btn-menu-stats">
             <i class="ri-history-line menu-icon"></i>
-            <span class="menu-text">역대 당첨번호 통계 (1~6개월)</span>
+            <span class="menu-text">역대 당첨 통계 히스토리</span>
             <i class="ri-arrow-right-s-line menu-arrow"></i>
           </div>
           <div class="menu-item" id="btn-menu-store">
             <i class="ri-map-pin-2-line menu-icon"></i>
-            <span class="menu-text">내 주변 로또 판매점 / 1등 명당 찾기</span>
+            <span class="menu-text">내 주변 복권 판매점 찾기</span>
             <i class="ri-arrow-right-s-line menu-arrow"></i>
           </div>
         </div>
       </div>
 
-      <!-- 5. 하단 고정 액션 바 -->
+      <!-- 5. 하단 액션 바 -->
       <div class="bottom-action-bar">
         <button class="btn-secondary" id="copy-all-btn">
-          <i class="ri-file-copy-line"></i> 번호 복사
+          <i class="ri-file-copy-line"></i> 전체 복사
         </button>
         <button class="btn-primary" id="regenerate-btn">
-          <i class="ri-refresh-line"></i> 번호 재생성
+          <i class="ri-refresh-line"></i> 번호 새로고침
         </button>
       </div>
 
-      <!-- 6. 셀프조합 설정 모달 -->
+      <!-- 6. 셀프조합 필터 모달 -->
       <div class="modal-backdrop" id="filter-modal">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 class="modal-title">셀프조합 필터 (제외수 설정)</h3>
+            <h3 class="modal-title">셀프조합 필터 (제외 번호)</h3>
             <button
               class="close-modal-btn"
               id="close-filter-modal-btn"
@@ -150,12 +158,53 @@ permalink: /noel-lotto/
             </button>
           </div>
           <button class="modal-apply-btn" id="apply-filter-btn">
-            설정 적용하고 번호 생성
+            설정 적용하고 조합 생성
           </button>
         </div>
       </div>
 
-      <!-- 7. 역대 당첨번호 히스토리 모달 (1개월~6개월) -->
+      <!-- 7. 오늘의 축복 1조합 & 성경 말씀 카드 팝업 (부드러운 오버레이) -->
+      <div class="lucky-popup-backdrop" id="lucky-modal">
+        <div class="lucky-card">
+          <button
+            class="lucky-close-btn"
+            id="close-lucky-modal-btn"
+            aria-label="닫기"
+          >
+            <i class="ri-close-line"></i>
+          </button>
+
+          <div class="lucky-icon-badge">🕊️</div>
+          <h3 class="lucky-title">오늘의 축복 1조합</h3>
+
+          <!-- 성경 말씀 인용 영역 -->
+          <div class="bible-verse-box">
+            <p class="bible-text" id="bible-verse-text">
+              "사람이 마음으로 자기의 길을 계획할지라도 그의 걸음을 인도하시는
+              이는 여호와시니라"
+            </p>
+            <span class="bible-ref" id="bible-verse-ref">잠언 16:9</span>
+          </div>
+
+          <div class="lucky-balls-container" id="lucky-balls-container">
+            <!-- 6개 번호 렌더링 -->
+          </div>
+
+          <div class="lucky-btn-group">
+            <button class="lucky-card-btn primary" id="copy-single-lucky-btn">
+              <i class="ri-file-copy-line"></i> 말씀과 번호 복사
+            </button>
+            <button
+              class="lucky-card-btn secondary"
+              id="retry-single-lucky-btn"
+            >
+              <i class="ri-refresh-line"></i> 다시 받기
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. 역대 당첨번호 히스토리 모달 -->
       <div class="modal-backdrop" id="stats-modal">
         <div class="modal-content history-modal-content">
           <div class="modal-header">
@@ -168,8 +217,6 @@ permalink: /noel-lotto/
               <i class="ri-close-line"></i>
             </button>
           </div>
-
-          <!-- 기간 선택 탭 -->
           <div class="period-tabs">
             <button class="tab-btn active" data-period="4">
               최근 1개월 (4주)
@@ -177,14 +224,11 @@ permalink: /noel-lotto/
             <button class="tab-btn" data-period="12">최근 3개월 (12주)</button>
             <button class="tab-btn" data-period="24">최근 6개월 (24주)</button>
           </div>
-
-          <div class="history-list" id="history-list-container">
-            <!-- JS로 회차 리스트 자동 렌더링 -->
-          </div>
+          <div class="history-list" id="history-list-container"></div>
         </div>
       </div>
 
-      <!-- 8. 지도 앱 선택 모달 (네이버 / 구글) -->
+      <!-- 9. 지도 앱 선택 모달 -->
       <div class="modal-backdrop" id="map-select-modal">
         <div class="modal-content map-modal-content">
           <div class="modal-header">
@@ -198,9 +242,8 @@ permalink: /noel-lotto/
             </button>
           </div>
           <p class="map-guide-text">
-            내 주변 로또 판매점과 명당을 어떤 앱으로 확인하시겠습니까?
+            복권 판매점 위치를 확인할 지도 앱을 선택해주세요.
           </p>
-
           <div class="map-btn-group">
             <button class="map-choice-btn naver-btn" id="open-naver-map-btn">
               <span class="map-icon-badge naver-badge">N</span>
@@ -209,7 +252,6 @@ permalink: /noel-lotto/
                 <small>네이버 지도 앱 또는 웹으로 이동</small>
               </div>
             </button>
-
             <button class="map-choice-btn google-btn" id="open-google-map-btn">
               <span class="map-icon-badge google-badge"
                 ><i class="ri-google-fill"></i

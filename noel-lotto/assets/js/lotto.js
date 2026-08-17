@@ -2,9 +2,41 @@
 let excludedNumbers = new Set();
 let currentDrawNo = 1237;
 let maxAvailableDrawNo = 1237;
+let singleLuckySet = [];
+let currentBibleVerse = { text: '', ref: '' };
 window.currentSets = [];
 
-// 최근 6개월(1212회 ~ 1237회) 공식 당첨 번호 데이터베이스 (지연 없는 즉시 조회 및 안전망용)
+// 은혜와 축복의 성경 구절 모음
+const bibleVerses = [
+  {
+    text: '사람이 마음으로 자기의 길을 계획할지라도 그의 걸음을 인도하시는 이는 여호와시니라',
+    ref: '잠언 16:9'
+  },
+  {
+    text: '구하라 그리하면 너희에게 주실 것이요 찾으라 그리하면 찾아낼 것이요',
+    ref: '마태복음 7:7'
+  },
+  {
+    text: '내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라',
+    ref: '빌립보서 4:13'
+  },
+  { text: '네 시작은 미약하였으나 네 나중은 심히 창대하리라', ref: '욥기 8:7' },
+  { text: '여호와는 나의 목자시니 내게 부족함이 없으리로다', ref: '시편 23:1' },
+  {
+    text: '두려워하지 말라 내가 너와 함께 함이라 놀라지 말라 나는 네 하나님이 됨이라',
+    ref: '이사야 41:10'
+  },
+  {
+    text: '너의 행사를 여호와께 맡기라 그리하면 네가 경영하는 것이 이루어지리라',
+    ref: '잠언 16:3'
+  },
+  {
+    text: '범사에 감사하라 이것이 그리스도 예수 안에서 너희를 향하신 하나님의 뜻이니라',
+    ref: '데살로니가전서 5:18'
+  }
+];
+
+// 최근 6개월(1212회 ~ 1237회) 공식 당첨 번호 데이터베이스 (지연 없는 즉시 조회 및 안전망)
 const localDrawDatabase = {
   1237: {
     drwNo: 1237,
@@ -346,7 +378,6 @@ const localDrawDatabase = {
   }
 };
 
-// 1. 공 색상 판정
 function getBallColorClass(num) {
   if (num <= 10) return 'c-yellow';
   if (num <= 20) return 'c-blue';
@@ -355,12 +386,10 @@ function getBallColorClass(num) {
   return 'c-green';
 }
 
-// 2. 번호가 속한 로또 용지의 세로줄(1열~7열) 번호 계산 함수
 function getColumnIndex(num) {
-  return ((num - 1) % 7) + 1; // 1 ~ 7 반환
+  return ((num - 1) % 7) + 1;
 }
 
-// 3. 최신 회차 자동 계산 (2026-08-15 제1237회 추첨 기준, 매주 토요일 20:45 반영)
 function calculateAccurateLatestDrawNo() {
   const baseDrawDate = new Date('2026-08-15T20:45:00+09:00').getTime();
   const now = new Date().getTime();
@@ -371,10 +400,8 @@ function calculateAccurateLatestDrawNo() {
   return 1237 + diffWeeks;
 }
 
-// 4. 상단 당첨 카드 UI 렌더링
 function renderDrawDataToUI(data) {
   if (!data) return;
-
   document.getElementById('draw-round-num').textContent = data.drwNo;
   document.getElementById('draw-date-text').textContent =
     data.drwNoDate || '추첨 완료';
@@ -409,11 +436,8 @@ function renderDrawDataToUI(data) {
   ballsWrap.appendChild(bonus);
 }
 
-// 5. 당첨 데이터 조회 (로컬 DB 우선 조회 -> 없을 시 다중 프록시 API 호출)
 async function getDrawData(drawNo) {
-  if (localDrawDatabase[drawNo]) {
-    return localDrawDatabase[drawNo];
-  }
+  if (localDrawDatabase[drawNo]) return localDrawDatabase[drawNo];
 
   const getUrl = (round) =>
     `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${round}`;
@@ -439,16 +463,13 @@ async function getDrawData(drawNo) {
   return null;
 }
 
-// 상단 회차 뷰 업데이트
 async function updateCurrentDrawView(drawNo) {
   currentDrawNo = drawNo;
   const data = await getDrawData(drawNo);
-  if (data) {
-    renderDrawDataToUI(data);
-  }
+  if (data) renderDrawDataToUI(data);
 }
 
-// 6. 단일 조합(6개 번호) 추첨 알고리즘 (세로 라인 중복 3개 이상 방지 필터 적용)
+// 6개 번호 조합 생성 (세로줄 3개 이상 중복 방지)
 function generateLottoSet() {
   const hotNumbers = [1, 10, 12, 17, 20, 23, 34, 37, 40, 43].filter(
     (n) => !excludedNumbers.has(n)
@@ -458,11 +479,10 @@ function generateLottoSet() {
   );
 
   let attempts = 0;
-
   while (attempts < 500) {
     attempts++;
     const selected = new Set();
-    const colCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // 각 세로열(1~7)별 카운트
+    const colCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
 
     while (selected.size < 6) {
       let num;
@@ -474,7 +494,6 @@ function generateLottoSet() {
 
       if (!selected.has(num)) {
         const col = getColumnIndex(num);
-        // 핵심 규칙: 해당 세로줄에 이미 2개가 뽑혀있다면 추가하지 않고 다시 뽑음 (최대 2개까지만 허용)
         if (colCount[col] < 2) {
           selected.add(num);
           colCount[col]++;
@@ -486,11 +505,10 @@ function generateLottoSet() {
       return Array.from(selected).sort((a, b) => a - b);
     }
   }
-
   return Array.from(new Set(availablePool.slice(0, 6))).sort((a, b) => a - b);
 }
 
-// 7. 5개 조합 애니메이션 렌더링
+// 5조합 렌더링
 function renderCombinationsWithAnimation(isAnimated = true) {
   const container = document.getElementById('combinations-container');
   container.innerHTML = '';
@@ -533,7 +551,6 @@ function renderCombinationsWithAnimation(isAnimated = true) {
         ball.className = `lotto-ball ${getBallColorClass(finalNum)}`;
         ball.textContent = finalNum;
       }
-
       ballsWrap.appendChild(ball);
     });
 
@@ -542,7 +559,78 @@ function renderCombinationsWithAnimation(isAnimated = true) {
   });
 }
 
-// 8. 셀프조합 필터 모달
+// 오늘의 축복 1조합 & 성경 말씀 팝업
+function renderSingleLuckySetWithAnimation() {
+  const wrap = document.getElementById('lucky-balls-container');
+  wrap.innerHTML = '';
+
+  // 성경 말씀 랜덤 선정
+  currentBibleVerse =
+    bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
+  document.getElementById('bible-verse-text').textContent =
+    `"${currentBibleVerse.text}"`;
+  document.getElementById('bible-verse-ref').textContent =
+    currentBibleVerse.ref;
+
+  singleLuckySet = generateLottoSet();
+
+  singleLuckySet.forEach((finalNum, idx) => {
+    const ball = document.createElement('div');
+    ball.className = 'lotto-ball rolling c-gray';
+    ball.textContent = '?';
+
+    const spinInterval = setInterval(() => {
+      ball.textContent = Math.floor(Math.random() * 45) + 1;
+    }, 60);
+
+    setTimeout(
+      () => {
+        clearInterval(spinInterval);
+        ball.classList.remove('rolling', 'c-gray');
+        ball.className = `lotto-ball ${getBallColorClass(finalNum)} pop-in`;
+        ball.textContent = finalNum;
+      },
+      (idx + 1) * 90
+    );
+
+    wrap.appendChild(ball);
+  });
+}
+
+function initLuckyModal() {
+  const modal = document.getElementById('lucky-modal');
+  const openBtn = document.getElementById('today-lucky-btn');
+  const closeBtn = document.getElementById('close-lucky-modal-btn');
+  const retryBtn = document.getElementById('retry-single-lucky-btn');
+  const copyBtn = document.getElementById('copy-single-lucky-btn');
+
+  openBtn.addEventListener('click', () => {
+    modal.classList.add('show');
+    renderSingleLuckySetWithAnimation();
+  });
+
+  closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('show');
+  });
+
+  retryBtn.addEventListener('click', () => {
+    renderSingleLuckySetWithAnimation();
+  });
+
+  copyBtn.addEventListener('click', () => {
+    if (singleLuckySet.length === 0) return;
+    const copyText = `[NOEL LOTTO — 오늘의 축복 말씀과 번호]\n${singleLuckySet.join(', ')}\n\n"${currentBibleVerse.text}" (${currentBibleVerse.ref})`;
+    navigator.clipboard.writeText(copyText).then(() => {
+      copyBtn.innerHTML = `<i class="ri-check-line"></i> 복사 완료!`;
+      setTimeout(() => {
+        copyBtn.innerHTML = `<i class="ri-file-copy-line"></i> 말씀과 번호 복사`;
+      }, 1800);
+    });
+  });
+}
+
+// 셀프조합 필터 모달
 function initFilterModal() {
   const modal = document.getElementById('filter-modal');
   const openBtn = document.getElementById('open-filter-modal-btn');
@@ -596,13 +684,13 @@ function initFilterModal() {
     if (excludedNumbers.size > 0) {
       tagDisplay.textContent = `제외수 ${excludedNumbers.size}개 적용 중`;
     } else {
-      tagDisplay.textContent = '기본 통계 가중치';
+      tagDisplay.textContent = '균형 배치 가중치';
     }
     renderCombinationsWithAnimation(true);
   });
 }
 
-// 9. 최근 1~6개월 당첨번호 통계 리스트 렌더링
+// 최근 통계 모달
 async function renderHistoryList(weeksCount) {
   const container = document.getElementById('history-list-container');
   container.innerHTML = '';
@@ -648,7 +736,7 @@ function initStatsModal() {
 
   openBtn.addEventListener('click', () => {
     modal.classList.add('show');
-    renderHistoryList(4); // 기본 1개월(4주)
+    renderHistoryList(4);
   });
 
   closeBtn.addEventListener('click', () => modal.classList.remove('show'));
@@ -666,7 +754,7 @@ function initStatsModal() {
   });
 }
 
-// 10. 로또 명당 찾기 (네이버 / 구글 지도 앱 선택 모달)
+// 지도 선택 모달
 function initMapStoreModal() {
   const modal = document.getElementById('map-select-modal');
   const openBtn = document.getElementById('btn-menu-store');
@@ -680,87 +768,80 @@ function initMapStoreModal() {
     if (e.target === modal) modal.classList.remove('show');
   });
 
-  // 네이버 지도 열기
   naverBtn.addEventListener('click', () => {
     modal.classList.remove('show');
-    const query = encodeURIComponent('로또판매점');
+    const query = encodeURIComponent('복권판매점');
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (isMobile) {
       const appUri = `nmap://search?query=${query}&appname=junyoung-oss.github.io`;
       const webUri = `https://m.map.naver.com/search2/search.naver?query=${query}`;
-
       const clickedAt = +new Date();
       window.location.href = appUri;
-
       setTimeout(() => {
-        if (+new Date() - clickedAt < 1500) {
-          window.location.href = webUri;
-        }
+        if (+new Date() - clickedAt < 1500) window.location.href = webUri;
       }, 800);
     } else {
       window.open(`https://map.naver.com/v5/search/${query}`, '_blank');
     }
   });
 
-  // 구글 지도 열기
   googleBtn.addEventListener('click', () => {
     modal.classList.remove('show');
-    const query = encodeURIComponent('로또 명당 판매점');
+    const query = encodeURIComponent('복권판매점');
     window.open(`https://www.google.com/maps/search/${query}`, '_blank');
   });
 }
 
-// 11. 메인 진입점 초기화 및 이벤트 리스너 등록
+// 초기화
 document.addEventListener('DOMContentLoaded', () => {
   maxAvailableDrawNo = calculateAccurateLatestDrawNo();
   currentDrawNo = maxAvailableDrawNo;
 
-  // 화면 초기 렌더링
+  // 상단 메인 말씀 랜덤 초기화
+  const randomMainVerse =
+    bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
+  const mainBanner = document.getElementById('main-daily-verse');
+  if (mainBanner) {
+    mainBanner.querySelector('.verse-content').textContent =
+      `"${randomMainVerse.text}"`;
+    mainBanner.querySelector('.verse-tag').textContent = randomMainVerse.ref;
+  }
+
   updateCurrentDrawView(currentDrawNo);
   renderCombinationsWithAnimation(false);
 
-  // 모달 등록
   initFilterModal();
+  initLuckyModal();
   initStatsModal();
   initMapStoreModal();
 
-  // 상단 좌측 버튼: 이전 회차 (<)
   document.getElementById('prev-draw-btn').addEventListener('click', () => {
-    if (currentDrawNo > 1) {
-      updateCurrentDrawView(currentDrawNo - 1);
-    }
+    if (currentDrawNo > 1) updateCurrentDrawView(currentDrawNo - 1);
   });
 
-  // 상단 우측 버튼: 다음 회차 (>)
   document.getElementById('next-draw-btn').addEventListener('click', () => {
-    if (currentDrawNo < maxAvailableDrawNo) {
+    if (currentDrawNo < maxAvailableDrawNo)
       updateCurrentDrawView(currentDrawNo + 1);
-    }
   });
 
-  // 번호 재생성 버튼
   document.getElementById('regenerate-btn').addEventListener('click', () => {
     renderCombinationsWithAnimation(true);
   });
 
-  // 오늘 1조합 추천 버튼
-  document.getElementById('today-lucky-btn').addEventListener('click', () => {
-    renderCombinationsWithAnimation(true);
-  });
-
-  // 번호 복사 버튼
   document.getElementById('copy-all-btn').addEventListener('click', () => {
     if (!window.currentSets || window.currentSets.length === 0) return;
     const text = window.currentSets
       .map((s, i) => `${i + 1}조합: ${s.join(', ')}`)
       .join('\n');
-    navigator.clipboard.writeText(`[행운로또번호 추천]\n${text}`).then(() => {
-      const btn = document.getElementById('copy-all-btn');
-      btn.innerHTML = `<i class="ri-check-line"></i> 복사 완료!`;
-      setTimeout(() => {
-        btn.innerHTML = `<i class="ri-file-copy-line"></i> 번호 복사`;
-      }, 1800);
-    });
+    navigator.clipboard
+      .writeText(`[NOEL LOTTO — 축복의 번호]\n${text}`)
+      .then(() => {
+        const btn = document.getElementById('copy-all-btn');
+        btn.innerHTML = `<i class="ri-check-line"></i> 복사 완료!`;
+        setTimeout(() => {
+          btn.innerHTML = `<i class="ri-file-copy-line"></i> 전체 복사`;
+        }, 1800);
+      });
   });
 });

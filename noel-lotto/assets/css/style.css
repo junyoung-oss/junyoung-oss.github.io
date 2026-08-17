@@ -1,7 +1,7 @@
 :root {
   --primary-yellow: #fcd535;
   --header-yellow: #fcd535;
-  --bg-color: #f2f4f7;
+  --bg-color: #f4f6f8;
   --card-bg: #ffffff;
   --text-main: #212529;
   --text-muted: #868e96;
@@ -47,7 +47,7 @@ body {
 /* 헤더 */
 .app-header {
   background-color: var(--header-yellow);
-  height: 56px;
+  height: 54px;
   display: flex;
   align-items: center;
   padding: 0 16px;
@@ -61,13 +61,40 @@ body {
 }
 
 .header-title {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 17px;
+  font-weight: 900;
   color: #1f2421;
+  letter-spacing: 0.5px;
+}
+
+/* 상단 묵상 말씀 배너 */
+.daily-verse-banner {
+  background: #fffdf5;
+  border-bottom: 1px solid #ffec99;
+  padding: 8px 16px;
+  font-size: 11.5px;
+  color: #795548;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.verse-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-style: italic;
+}
+
+.verse-tag {
+  font-weight: 700;
+  color: #e67700;
+  white-space: nowrap;
 }
 
 .app-content {
-  padding: 16px 16px 90px;
+  padding: 14px 16px 90px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -331,7 +358,7 @@ body {
   font-size: 18px;
 }
 
-/* 하단 바 */
+/* 하단 고정 액션 바 */
 .bottom-action-bar {
   position: fixed;
   bottom: 0;
@@ -374,7 +401,7 @@ body {
   box-shadow: 0 4px 10px rgba(252, 213, 53, 0.4);
 }
 
-/* 모달 공통 */
+/* 바텀시트 모달 공통 */
 .modal-backdrop {
   display: none;
   position: fixed;
@@ -434,7 +461,7 @@ body {
   cursor: pointer;
 }
 
-/* 셀프조합 전용 */
+/* 셀프조합 그리드 */
 .modal-guide {
   background: #fff9db;
   border: 1px solid #ffe066;
@@ -501,7 +528,184 @@ body {
   cursor: pointer;
 }
 
-/* 역대 당첨번호 통계 팝업 전용 */
+/* =========================================
+   오늘의 축복 카드 & 성경 말씀 팝업
+========================================= */
+.lucky-popup-backdrop {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0);
+  backdrop-filter: blur(0px);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 0.35s ease;
+}
+
+.lucky-popup-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.lucky-card {
+  width: 100%;
+  max-width: 360px;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 26px 20px 22px;
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(251, 196, 0, 0.4),
+    0 0 30px rgba(252, 213, 53, 0.2);
+  text-align: center;
+  position: relative;
+  transform: translateY(24px) scale(0.96);
+  transition: transform 0.38s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.lucky-popup-backdrop.show .lucky-card {
+  transform: translateY(0) scale(1);
+}
+
+.lucky-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #f8f9fa;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #adb5bd;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lucky-close-btn:hover {
+  color: #495057;
+  background: #e9ecef;
+}
+
+.lucky-icon-badge {
+  width: 54px;
+  height: 54px;
+  background: #fff9db;
+  font-size: 28px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 14px rgba(250, 176, 5, 0.2);
+  animation: gentlePulse 2.2s infinite ease-in-out;
+}
+
+@keyframes gentlePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.lucky-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #212529;
+}
+
+/* 성경 말씀 인용 박스 */
+.bible-verse-box {
+  background: #f8f9fa;
+  border-left: 3.5px solid var(--primary-yellow);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 14px 0 20px;
+  text-align: left;
+}
+
+.bible-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #495057;
+  font-style: italic;
+}
+
+.bible-ref {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #868e96;
+  text-align: right;
+  margin-top: 6px;
+}
+
+.lucky-balls-container {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+
+.lucky-balls-container .lotto-ball {
+  width: 38px;
+  height: 38px;
+  font-size: 14px;
+}
+
+.lucky-btn-group {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 8px;
+}
+
+.lucky-card-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 13px 0;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.lucky-card-btn.primary {
+  background: var(--primary-yellow);
+  color: #1f2421;
+  box-shadow: 0 4px 12px rgba(252, 213, 53, 0.4);
+}
+
+.lucky-card-btn.secondary {
+  background: #f1f3f5;
+  color: #495057;
+}
+
+.lucky-card-btn:active {
+  transform: scale(0.97);
+}
+
+/* 통계 및 지도 모달 */
 .period-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -553,7 +757,6 @@ body {
   color: #868e96;
 }
 
-/* 지도 선택 모달 전용 */
 .map-guide-text {
   font-size: 13px;
   color: #495057;
