@@ -4,7 +4,7 @@ let currentDrawNo = 1237;
 let maxAvailableDrawNo = 1237;
 window.currentSets = [];
 
-// 2026-08-15 기준 1237회 공식 데이터 (기본 백업용)
+// 2026-08-15 기준 1237회 공식 기본 백업 데이터
 const fallbackDrawData = {
   returnValue: 'success',
   drwNo: 1237,
@@ -20,7 +20,11 @@ const fallbackDrawData = {
   bnusNo: 36
 };
 
-// 공 색상 판정 함수
+// 최근 당첨 번호 로컬 캐시 (1~6개월 통계용)
+const cachedDraws = new Map();
+cachedDraws.set(1237, fallbackDrawData);
+
+// 공 색상 판정
 function getBallColorClass(num) {
   if (num <= 10) return 'c-yellow';
   if (num <= 20) return 'c-blue';
@@ -29,24 +33,18 @@ function getBallColorClass(num) {
   return 'c-green';
 }
 
-// 1. 현재 접속 시점 기준 최신 회차 정확 계산 (매주 토요일 20:45 기준)
+// 1. 접속 시점 기준 최신 회차 자동 계산 (토요일 20:45 기준)
 function calculateAccurateLatestDrawNo() {
-  // 1237회 추첨 기준 시점: 2026년 8월 15일 20시 45분 (KST)
   const baseDrawDate = new Date('2026-08-15T20:45:00+09:00').getTime();
   const now = new Date().getTime();
-
-  if (now < baseDrawDate) {
-    return 1237;
-  }
-
-  // 지난 주 수만큼 회차 증가
+  if (now < baseDrawDate) return 1237;
   const diffWeeks = Math.floor(
     (now - baseDrawDate) / (1000 * 60 * 60 * 24 * 7)
   );
   return 1237 + diffWeeks;
 }
 
-// 2. 당첨 정보 화면 UI 렌더링
+// 2. 상단 카드 UI 렌더링
 function renderDrawDataToUI(data) {
   if (!data || data.returnValue !== 'success') return;
 
@@ -83,8 +81,12 @@ function renderDrawDataToUI(data) {
   ballsWrap.appendChild(bonus);
 }
 
-// 3. 실시간 동행복권 API 호출 (다중 프록시 + 최신 회차 자동 탐색)
-async function loadDrawData(drawNo) {
+// 3. 실시간 당첨 정보 API 호출
+async function fetchDrawData(drawNo) {
+  if (cachedDraws.has(drawNo)) {
+    return cachedDraws.get(drawNo);
+  }
+
   const getUrl = (round) =>
     `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${round}`;
   const proxies = [
@@ -93,35 +95,33 @@ async function loadDrawData(drawNo) {
     (round) => `https://corsproxy.io/?${encodeURIComponent(getUrl(round))}`
   ];
 
-  // 회차 데이터 조회 시도
-  for (let proxyGenerator of proxies) {
+  for (let makeProxy of proxies) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500); // 2.5초 타임아웃
-
-      const res = await fetch(proxyGenerator(drawNo), {
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-
+      const timeout = setTimeout(() => controller.abort(), 2000);
+      const res = await fetch(makeProxy(drawNo), { signal: controller.signal });
+      clearTimeout(timeout);
       const data = await res.json();
       if (data && data.returnValue === 'success') {
-        currentDrawNo = data.drwNo;
-        renderDrawDataToUI(data);
-        return;
+        cachedDraws.set(drawNo, data);
+        return data;
       }
-    } catch (e) {
-      // 프록시 실패 시 다음 프록시 시도
-    }
+    } catch (e) {}
   }
+  return null;
+}
 
-  // API 실패 시 해당 회차가 1237회라면 준비된 공식 백업 데이터 표시
-  if (drawNo === 1237) {
+async function loadDrawData(drawNo) {
+  const data = await fetchDrawData(drawNo);
+  if (data) {
+    currentDrawNo = data.drwNo;
+    renderDrawDataToUI(data);
+  } else if (drawNo === 1237) {
     renderDrawDataToUI(fallbackDrawData);
   }
 }
 
-// 4. 단일 세트(6개) 번호 추첨 로직 (제외수 반영)
+// 4. 단일 세트(6개) 번호 추첨 로직
 function generateLottoSet() {
   const hotNumbers = [1, 10, 12, 17, 20, 23, 34, 37, 40, 43].filter(
     (n) => !excludedNumbers.has(n)
@@ -195,11 +195,11 @@ function renderCombinationsWithAnimation(isAnimated = true) {
   });
 }
 
-// 6. 셀프조합 모달 바텀시트 초기화
+// 6. 셀프조합 모달 초기화
 function initFilterModal() {
   const modal = document.getElementById('filter-modal');
   const openBtn = document.getElementById('open-filter-modal-btn');
-  const closeBtn = document.getElementById('close-modal-btn');
+  const closeBtn = document.getElementById('close-filter-modal-btn');
   const resetBtn = document.getElementById('reset-filter-btn');
   const applyBtn = document.getElementById('apply-filter-btn');
   const gridContainer = document.getElementById('number-grid');
@@ -255,19 +255,145 @@ function initFilterModal() {
   });
 }
 
-// 7. 메인 실행 진입점
+// 7. 역대 당첨번호 통계 팝업 (1개월~6개월)
+async function renderHistoryList(weeksCount) {
+  const container = document.getElementById('history-list-container');
+  container.innerHTML =
+    '<div style="text-align:center; padding: 20px; color:#868e96; font-size:13px;">당첨 번호 기록을 불러오는 중...</div>';
+
+  const startRound = maxAvailableDrawNo;
+  const items = [];
+
+  for (let i = 0; i < weeksCount; i++) {
+    const round = startRound - i;
+    if (round < 1) break;
+    items.push(round);
+  }
+
+  const htmlList = [];
+  for (const round of items) {
+    let data = cachedDraws.get(round);
+    if (!data) {
+      data = await fetchDrawData(round);
+    }
+
+    if (data && data.returnValue === 'success') {
+      const ballsHtml = [1, 2, 3, 4, 5, 6]
+        .map((idx) => {
+          const num = data[`drwtNo${idx}`];
+          return `<div class="lotto-ball sm ${getBallColorClass(num)}">${num}</div>`;
+        })
+        .join('');
+
+      const bonusHtml = `<span class="plus-sign" style="font-size:11px;">+</span><div class="lotto-ball sm ${getBallColorClass(data.bnusNo)}">${data.bnusNo}</div>`;
+
+      htmlList.push(`
+        <div class="history-item">
+          <div>
+            <div class="history-round">${data.drwNo}회</div>
+            <div class="history-date">${data.drwNoDate || ''}</div>
+          </div>
+          <div class="balls-row">${ballsHtml}${bonusHtml}</div>
+        </div>
+      `);
+    } else {
+      // 조회 실패 시 기본 플레이스홀더
+      htmlList.push(`
+        <div class="history-item">
+          <div class="history-round">${round}회</div>
+          <div style="font-size:12px; color:#adb5bd;">조회 대기 중</div>
+        </div>
+      `);
+    }
+  }
+
+  container.innerHTML = htmlList.join('');
+}
+
+function initStatsModal() {
+  const modal = document.getElementById('stats-modal');
+  const openBtn = document.getElementById('btn-menu-stats');
+  const closeBtn = document.getElementById('close-stats-modal-btn');
+  const tabBtns = document.querySelectorAll('.tab-btn');
+
+  openBtn.addEventListener('click', () => {
+    modal.classList.add('show');
+    renderHistoryList(4); // 기본 1개월(4주)
+  });
+
+  closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('show');
+  });
+
+  tabBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const weeks = parseInt(btn.getAttribute('data-period'), 10);
+      renderHistoryList(weeks);
+    });
+  });
+}
+
+// 8. 로또 명당 찾기 (네이버 / 구글 지도 앱 연동 모달)
+function initMapStoreModal() {
+  const modal = document.getElementById('map-select-modal');
+  const openBtn = document.getElementById('btn-menu-store');
+  const closeBtn = document.getElementById('close-map-modal-btn');
+  const naverBtn = document.getElementById('open-naver-map-btn');
+  const googleBtn = document.getElementById('open-google-map-btn');
+
+  openBtn.addEventListener('click', () => modal.classList.add('show'));
+  closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('show');
+  });
+
+  // 네이버 지도 열기 (앱 호출 및 웹 fallback)
+  naverBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+    const query = encodeURIComponent('로또판매점');
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      const appUri = `nmap://search?query=${query}&appname=junyoung-oss.github.io`;
+      const webUri = `https://m.map.naver.com/search2/search.naver?query=${query}`;
+
+      const clickedAt = +new Date();
+      window.location.href = appUri;
+
+      setTimeout(() => {
+        if (+new Date() - clickedAt < 1500) {
+          window.location.href = webUri;
+        }
+      }, 800);
+    } else {
+      window.open(`https://map.naver.com/v5/search/${query}`, '_blank');
+    }
+  });
+
+  // 구글 지도 열기
+  googleBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+    const query = encodeURIComponent('로또 명당 판매점');
+    window.open(`https://www.google.com/maps/search/${query}`, '_blank');
+  });
+}
+
+// 9. 메인 진입점 실행
 document.addEventListener('DOMContentLoaded', () => {
-  // 1) 즉시 초기 화면 렌더링 (빈칸 방지)
   renderDrawDataToUI(fallbackDrawData);
   renderCombinationsWithAnimation(false);
-  initFilterModal();
 
-  // 2) 접속 시간 기준 최신 회차 자동 계산 및 실시간 패치
+  initFilterModal();
+  initStatsModal();
+  initMapStoreModal();
+
   maxAvailableDrawNo = calculateAccurateLatestDrawNo();
   currentDrawNo = maxAvailableDrawNo;
   loadDrawData(currentDrawNo);
 
-  // 이전/다음 회차 탐색 버튼 이벤트
   document.getElementById('prev-draw-btn').addEventListener('click', () => {
     if (currentDrawNo > 1) {
       currentDrawNo--;
@@ -282,17 +408,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 번호 재생성 버튼
   document.getElementById('regenerate-btn').addEventListener('click', () => {
     renderCombinationsWithAnimation(true);
   });
 
-  // 오늘 1조합 추천 버튼
   document.getElementById('today-lucky-btn').addEventListener('click', () => {
     renderCombinationsWithAnimation(true);
   });
 
-  // 전체 복사 버튼
   document.getElementById('copy-all-btn').addEventListener('click', () => {
     if (!window.currentSets || window.currentSets.length === 0) return;
     const text = window.currentSets
@@ -305,19 +428,5 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.innerHTML = `<i class="ri-file-copy-line"></i> 번호 복사`;
       }, 1800);
     });
-  });
-
-  // 웹 공유 API
-  document.getElementById('share-btn').addEventListener('click', () => {
-    if (navigator.share) {
-      navigator.share({
-        title: '행운로또번호',
-        text: '오늘의 로또 당첨 예상 번호를 확인해보세요!',
-        url: window.location.href
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('링크가 클립보드에 복사되었습니다.');
-    }
   });
 });
