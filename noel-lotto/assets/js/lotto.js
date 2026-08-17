@@ -4,7 +4,7 @@ let currentDrawNo = 1237;
 let maxAvailableDrawNo = 1237;
 window.currentSets = [];
 
-// 최근 6개월(1212회 ~ 1237회) 공식 당첨 번호 데이터베이스 (지연/차단 없는 즉시 조회용)
+// 최근 6개월(1212회 ~ 1237회) 공식 당첨 번호 데이터베이스 (지연 없는 즉시 조회 및 안전망용)
 const localDrawDatabase = {
   1237: {
     drwNo: 1237,
@@ -346,7 +346,7 @@ const localDrawDatabase = {
   }
 };
 
-// 공 색상 판정
+// 1. 공 색상 판정
 function getBallColorClass(num) {
   if (num <= 10) return 'c-yellow';
   if (num <= 20) return 'c-blue';
@@ -355,7 +355,12 @@ function getBallColorClass(num) {
   return 'c-green';
 }
 
-// 1. 최신 회차 자동 계산 (2026-08-15 제1237회 기준)
+// 2. 번호가 속한 로또 용지의 세로줄(1열~7열) 번호 계산 함수
+function getColumnIndex(num) {
+  return ((num - 1) % 7) + 1; // 1 ~ 7 반환
+}
+
+// 3. 최신 회차 자동 계산 (2026-08-15 제1237회 추첨 기준, 매주 토요일 20:45 반영)
 function calculateAccurateLatestDrawNo() {
   const baseDrawDate = new Date('2026-08-15T20:45:00+09:00').getTime();
   const now = new Date().getTime();
@@ -366,7 +371,7 @@ function calculateAccurateLatestDrawNo() {
   return 1237 + diffWeeks;
 }
 
-// 2. 상단 당첨 카드 UI 렌더링
+// 4. 상단 당첨 카드 UI 렌더링
 function renderDrawDataToUI(data) {
   if (!data) return;
 
@@ -404,7 +409,7 @@ function renderDrawDataToUI(data) {
   ballsWrap.appendChild(bonus);
 }
 
-// 3. 당첨 데이터 조회 (로컬 DB 우선 -> 없을 경우에만 API 호출)
+// 5. 당첨 데이터 조회 (로컬 DB 우선 조회 -> 없을 시 다중 프록시 API 호출)
 async function getDrawData(drawNo) {
   if (localDrawDatabase[drawNo]) {
     return localDrawDatabase[drawNo];
@@ -434,7 +439,7 @@ async function getDrawData(drawNo) {
   return null;
 }
 
-// 회차 변경 및 화면 반영 함수
+// 상단 회차 뷰 업데이트
 async function updateCurrentDrawView(drawNo) {
   currentDrawNo = drawNo;
   const data = await getDrawData(drawNo);
@@ -443,7 +448,7 @@ async function updateCurrentDrawView(drawNo) {
   }
 }
 
-// 4. 번호 조합 생성 (AI 통계 가중치)
+// 6. 단일 조합(6개 번호) 추첨 알고리즘 (세로 라인 중복 3개 이상 방지 필터 적용)
 function generateLottoSet() {
   const hotNumbers = [1, 10, 12, 17, 20, 23, 34, 37, 40, 43].filter(
     (n) => !excludedNumbers.has(n)
@@ -452,20 +457,40 @@ function generateLottoSet() {
     (n) => !excludedNumbers.has(n)
   );
 
-  const selected = new Set();
-  while (selected.size < 6) {
-    let num;
-    if (hotNumbers.length > 0 && Math.random() < 0.35) {
-      num = hotNumbers[Math.floor(Math.random() * hotNumbers.length)];
-    } else {
-      num = availablePool[Math.floor(Math.random() * availablePool.length)];
+  let attempts = 0;
+
+  while (attempts < 500) {
+    attempts++;
+    const selected = new Set();
+    const colCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // 각 세로열(1~7)별 카운트
+
+    while (selected.size < 6) {
+      let num;
+      if (hotNumbers.length > 0 && Math.random() < 0.35) {
+        num = hotNumbers[Math.floor(Math.random() * hotNumbers.length)];
+      } else {
+        num = availablePool[Math.floor(Math.random() * availablePool.length)];
+      }
+
+      if (!selected.has(num)) {
+        const col = getColumnIndex(num);
+        // 핵심 규칙: 해당 세로줄에 이미 2개가 뽑혀있다면 추가하지 않고 다시 뽑음 (최대 2개까지만 허용)
+        if (colCount[col] < 2) {
+          selected.add(num);
+          colCount[col]++;
+        }
+      }
     }
-    selected.add(num);
+
+    if (selected.size === 6) {
+      return Array.from(selected).sort((a, b) => a - b);
+    }
   }
-  return Array.from(selected).sort((a, b) => a - b);
+
+  return Array.from(new Set(availablePool.slice(0, 6))).sort((a, b) => a - b);
 }
 
-// 5. 5개 조합 리스트 애니메이션 렌더링
+// 7. 5개 조합 애니메이션 렌더링
 function renderCombinationsWithAnimation(isAnimated = true) {
   const container = document.getElementById('combinations-container');
   container.innerHTML = '';
@@ -517,7 +542,7 @@ function renderCombinationsWithAnimation(isAnimated = true) {
   });
 }
 
-// 6. 셀프조합 모달
+// 8. 셀프조합 필터 모달
 function initFilterModal() {
   const modal = document.getElementById('filter-modal');
   const openBtn = document.getElementById('open-filter-modal-btn');
@@ -577,7 +602,7 @@ function initFilterModal() {
   });
 }
 
-// 7. 최근 1~6개월 히스토리 렌더링
+// 9. 최근 1~6개월 당첨번호 통계 리스트 렌더링
 async function renderHistoryList(weeksCount) {
   const container = document.getElementById('history-list-container');
   container.innerHTML = '';
@@ -641,7 +666,7 @@ function initStatsModal() {
   });
 }
 
-// 8. 지도 앱 선택 모달 (네이버 / 구글 지도 연동)
+// 10. 로또 명당 찾기 (네이버 / 구글 지도 앱 선택 모달)
 function initMapStoreModal() {
   const modal = document.getElementById('map-select-modal');
   const openBtn = document.getElementById('btn-menu-store');
@@ -686,44 +711,45 @@ function initMapStoreModal() {
   });
 }
 
-// 9. 메인 초기화 및 좌우 회차 변경 버튼 이벤트
+// 11. 메인 진입점 초기화 및 이벤트 리스너 등록
 document.addEventListener('DOMContentLoaded', () => {
   maxAvailableDrawNo = calculateAccurateLatestDrawNo();
   currentDrawNo = maxAvailableDrawNo;
 
-  // 초기 렌더링
+  // 화면 초기 렌더링
   updateCurrentDrawView(currentDrawNo);
   renderCombinationsWithAnimation(false);
 
+  // 모달 등록
   initFilterModal();
   initStatsModal();
   initMapStoreModal();
 
-  // 상단 좌측 버튼: 이전 회차 보기 (<)
+  // 상단 좌측 버튼: 이전 회차 (<)
   document.getElementById('prev-draw-btn').addEventListener('click', () => {
     if (currentDrawNo > 1) {
       updateCurrentDrawView(currentDrawNo - 1);
     }
   });
 
-  // 상단 우측 버튼: 다음 회차 보기 (>)
+  // 상단 우측 버튼: 다음 회차 (>)
   document.getElementById('next-draw-btn').addEventListener('click', () => {
     if (currentDrawNo < maxAvailableDrawNo) {
       updateCurrentDrawView(currentDrawNo + 1);
     }
   });
 
-  // 번호 재생성
+  // 번호 재생성 버튼
   document.getElementById('regenerate-btn').addEventListener('click', () => {
     renderCombinationsWithAnimation(true);
   });
 
-  // 오늘 1조합 추천
+  // 오늘 1조합 추천 버튼
   document.getElementById('today-lucky-btn').addEventListener('click', () => {
     renderCombinationsWithAnimation(true);
   });
 
-  // 복사
+  // 번호 복사 버튼
   document.getElementById('copy-all-btn').addEventListener('click', () => {
     if (!window.currentSets || window.currentSets.length === 0) return;
     const text = window.currentSets
