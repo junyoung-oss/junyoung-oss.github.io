@@ -914,3 +914,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 });
+// 서비스 워커 등록 (PWA 앱 설치 인식)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
